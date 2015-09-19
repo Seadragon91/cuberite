@@ -5,13 +5,13 @@
 
 AString GetOSErrorString( int a_ErrNo)
 {
-	char buffer[ 1024 ];
 	AString Out;
 
 	#ifdef _WIN32
 
+	wchar_t buffer[1024];
 	FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, nullptr, a_ErrNo, 0, buffer, ARRAYCOUNT(buffer), nullptr);
-	Printf(Out, "%d: %s", a_ErrNo, buffer);
+	Printf(Out, "%d: %S", a_ErrNo, buffer);
 	if (!Out.empty() && (Out[Out.length() - 1] == '\n'))
 	{
 		Out.erase(Out.length() - 2);
@@ -19,7 +19,8 @@ AString GetOSErrorString( int a_ErrNo)
 	return Out;
 	
 	#else  // _WIN32
-	
+
+	char buffer[1024];
 	// According to http://linux.die.net/man/3/strerror_r there are two versions of strerror_r():
 	
 	#if !defined(__APPLE__) && defined( _GNU_SOURCE) && !defined(ANDROID_NDK)  // GNU version of strerror_r()
