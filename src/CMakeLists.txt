@@ -22,6 +22,7 @@ SET (SRCS
 	BoundingBox.cpp
 	ByteBuffer.cpp
 	ChatColor.cpp
+	ChatMessageBuilder.cpp
 	Chunk.cpp
 	ChunkData.cpp
 	ChunkMap.cpp
@@ -90,6 +91,7 @@ SET (HDRS
 	BuildInfo.h.cmake
 	ByteBuffer.h
 	ChatColor.h
+	ChatMessageBuilder.h
 	Chunk.h
 	ChunkData.h
 	ChunkDataCallback.h
@@ -97,6 +99,7 @@ SET (HDRS
 	ChunkMap.h
 	ChunkSender.h
 	ChunkStay.h
+	ClickEvent.h
 	ClientHandle.h
 	Color.h
 	CommandOutput.h
@@ -112,6 +115,7 @@ SET (HDRS
 	ForEachChunkProvider.h
 	FurnaceRecipe.h
 	Globals.h
+	HoverEvent.h
 	IniFile.h
 	Inventory.h
 	Item.h
