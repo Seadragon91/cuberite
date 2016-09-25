@@ -42,6 +42,7 @@ class cFallingBlock;
 class cItemHandler;
 class cWorld;
 class cCompositeChat;
+class cChatMessageBuilder;
 class cStatManager;
 class cClientHandle;
 typedef SharedPtr<cClientHandle> cClientHandlePtr;
@@ -153,6 +154,7 @@ public:  // tolua_export
 	void SendCameraSetTo                (const cEntity & a_Entity);
 	void SendChat                       (const AString & a_Message, eMessageType a_ChatPrefix, const AString & a_AdditionalData = "");
 	void SendChat                       (const cCompositeChat & a_Message);
+	void SendChat                       (const cChatMessageBuilder & a_Message);
 	void SendChatAboveActionBar         (const AString & a_Message, eMessageType a_ChatPrefix, const AString & a_AdditionalData = "");
 	void SendChatAboveActionBar         (const cCompositeChat & a_Message);
 	void SendChatSystem                 (const AString & a_Message, eMessageType a_ChatPrefix, const AString & a_AdditionalData = "");

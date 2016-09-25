@@ -32,6 +32,7 @@
 #include "Protocol/Authenticator.h"
 #include "Protocol/ProtocolRecognizer.h"
 #include "CompositeChat.h"
+#include "ChatMessageBuilder.h"
 #include "Items/ItemSword.h"
 
 #include "polarssl/md5.h"
@@ -2252,6 +2253,26 @@ void cClientHandle::SendChat(const AString & a_Message, eMessageType a_ChatPrefi
 
 
 void cClientHandle::SendChat(const cCompositeChat & a_Message)
+{
+	cWorld * World = GetPlayer()->GetWorld();
+	if (World == nullptr)
+	{
+		World = cRoot::Get()->GetWorld(GetPlayer()->GetLoadedWorldName());
+		if (World == nullptr)
+		{
+			World = cRoot::Get()->GetDefaultWorld();
+		}
+	}
+
+	bool ShouldUsePrefixes = World->ShouldUseChatPrefixes();
+	m_Protocol->SendChat(a_Message, ctChatBox, ShouldUsePrefixes);
+}
+
+
+
+
+
+void cClientHandle::SendChat(const cChatMessageBuilder & a_Message)
 {
 	cWorld * World = GetPlayer()->GetWorld();
 	if (World == nullptr)

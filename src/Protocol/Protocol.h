@@ -35,6 +35,7 @@ class cMonster;
 class cChunkDataSerializer;
 class cFallingBlock;
 class cCompositeChat;
+class cChatMessageBuilder;
 class cStatManager;
 class cPacketizer;
 
@@ -72,6 +73,7 @@ public:
 	virtual void SendCameraSetTo                (const cEntity & a_Entity) = 0;
 	virtual void SendChat                       (const AString & a_Message, eChatType a_Type) = 0;
 	virtual void SendChat                       (const cCompositeChat & a_Message, eChatType a_Type, bool a_ShouldUseChatPrefixes) = 0;
+	virtual void SendChat                       (const cChatMessageBuilder & a_Message, eChatType a_Type, bool a_ShouldUseChatPrefixes) = 0;
 	virtual void SendChunkData                  (int a_ChunkX, int a_ChunkZ, cChunkDataSerializer & a_Serializer) = 0;
 	virtual void SendCollectEntity              (const cEntity & a_Entity, const cPlayer & a_Player) = 0;
 	virtual void SendDestroyEntity              (const cEntity & a_Entity) = 0;
