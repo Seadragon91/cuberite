@@ -75,7 +75,7 @@ cChatMessageBuilder * cChatMessageBuilder::Click(cClickEvent::Action a_Action, c
 
 cChatMessageBuilder * cChatMessageBuilder::Hover(cHoverEvent::Action a_Action, std::unique_ptr<cChatMessageBuilder> a_ChatMessageBuilder)
 {
-	m_Current->m_HoverEvent.reset(&cHoverEvent(a_Action, std::move(a_ChatMessageBuilder)));
+	m_Current->m_HoverEvent.reset(&cHoverEvent(a_Action, a_ChatMessageBuilder));
 	return this;
 }
 

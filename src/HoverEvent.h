@@ -1,8 +1,8 @@
 #pragma once
 
+#include "Globals.h"
+#include "ChatMessagePart.h"
 #include "ChatMessageBuilder.h"
-
-class cChatMessageBuilder;
 
 class cHoverEvent
 {
@@ -16,24 +16,26 @@ public:
 
 	Action m_Action = Action::NONE;
 
-	cHoverEvent(Action a_Action, std::unique_ptr<cChatMessageBuilder> a_ChatMessageBuilder) :
-		m_Action(a_Action),
-		m_HoverMessageBuilder(std::move(a_ChatMessageBuilder))
-	{}
+	cHoverEvent(Action a_Action, std::unique_ptr<cChatMessageBuilder> & a_ChatMessageBuilder) :
+		m_Action(a_Action)
+	{
+		m_ChatMessageBuilder = std::move(a_ChatMessageBuilder);
+	}
 
 	~cHoverEvent() {}
 
 	AString CreateText()
 	{
-		m_HoverMessageBuilder->m_Parts.push_back(m_HoverMessageBuilder->m_Current.release());
+		m_ChatMessageBuilder->m_Parts.push_back(m_ChatMessageBuilder->m_Current.release());
 
 		AString Ret;
-		for each(auto & HoverPart in m_HoverMessageBuilder->m_Parts)
+		for each(auto & HoverPart in m_ChatMessageBuilder->m_Parts)
 		{
 			Ret.append(HoverPart->CreateMessage());
 		}
 		return Ret;
 	}
 
-	std::unique_ptr<cChatMessageBuilder> m_HoverMessageBuilder = cpp14::make_unique<cChatMessageBuilder>();
+private:
+	std::unique_ptr<cChatMessageBuilder> m_ChatMessageBuilder = cpp14::make_unique<cChatMessageBuilder>();
 };

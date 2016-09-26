@@ -92,6 +92,7 @@ SET (HDRS
 	ByteBuffer.h
 	ChatColor.h
 	ChatMessageBuilder.h
+	ChatMessagePart.h
 	Chunk.h
 	ChunkData.h
 	ChunkDataCallback.h
