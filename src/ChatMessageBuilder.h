@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Globals.h"
-
 #include "ChatColor.h"
 #include "ChatMessagePart.h"
 #include "ClickEvent.h"
@@ -33,7 +31,7 @@ public:
 
 	cChatMessageBuilder * Click(cClickEvent::Action a_Action, const AString & a_Text);
 
-	cChatMessageBuilder * Hover(cHoverEvent::Action a_Action, std::unique_ptr<cChatMessageBuilder> a_ChatMessageBuilder);
+	cChatMessageBuilder * Hover(cHoverEvent::Action a_Action, cChatMessageBuilder a_ChatMessageBuilder);
 
 	AString CreateJsonString();
 

@@ -1,3 +1,5 @@
+
+#include "Globals.h"
 #include "ChatMessageBuilder.h"
 
 cChatMessageBuilder::cChatMessageBuilder(const AString & a_Text):
@@ -70,9 +72,9 @@ cChatMessageBuilder * cChatMessageBuilder::Click(cClickEvent::Action a_Action, c
 }
 
 
-cChatMessageBuilder * cChatMessageBuilder::Hover(cHoverEvent::Action a_Action, std::unique_ptr<cChatMessageBuilder> a_ChatMessageBuilder)
+cChatMessageBuilder * cChatMessageBuilder::Hover(cHoverEvent::Action a_Action, cChatMessageBuilder a_ChatMessageBuilder)
 {
-	m_Current->m_HoverEvent.reset(&cHoverEvent(a_Action, a_ChatMessageBuilder));
+	m_Current->m_HoverEvent.reset(&cHoverEvent(a_Action, std::make_unique<cChatMessageBuilder>(a_ChatMessageBuilder)));
 	return this;
 }
 
@@ -84,7 +86,7 @@ AString cChatMessageBuilder::CreateJsonString()
 	m_Parts.push_back(m_Current.release());
 
 	Json::Value Msg;
-	for (auto & ChatMessagePart in m_Parts)
+	for (auto & ChatMessagePart : m_Parts)
 	{
 		Msg.append(ChatMessagePart->CreateMessage());
 		if (ChatMessagePart->m_ClickEvent->m_Action != cClickEvent::Action::NONE)

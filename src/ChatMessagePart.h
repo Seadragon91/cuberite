@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Globals.h"
 #include "ClickEvent.h"
 #include "HoverEvent.h"
 
@@ -23,21 +24,6 @@ public:
 			return "";
 
 		AString Ret;
-		if (m_Obfuscated)
-			Ret.append("§k");
-
-		if (m_Bold)
-			Ret.append("§l");
-
-		if (m_Strikethrough)
-			Ret.append("§m");
-
-		if (m_Underlined)
-			Ret.append("§n");
-
-		if (m_Italic)
-			Ret.append("§o");
-
 		Ret.append(m_Text);
 		return Ret;
 	}
