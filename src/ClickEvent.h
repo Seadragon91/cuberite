@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Defines.h"
-
 class cClickEvent
 {
 public:

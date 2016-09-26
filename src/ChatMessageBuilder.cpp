@@ -1,6 +1,3 @@
-#pragma once
-
-#include "Globals.h"
 #include "ChatMessageBuilder.h"
 
 cChatMessageBuilder::cChatMessageBuilder(const AString & a_Text):
@@ -87,7 +84,7 @@ AString cChatMessageBuilder::CreateJsonString()
 	m_Parts.push_back(m_Current.release());
 
 	Json::Value Msg;
-	for each (auto & ChatMessagePart in m_Parts)
+	for (auto & ChatMessagePart in m_Parts)
 	{
 		Msg.append(ChatMessagePart->CreateMessage());
 		if (ChatMessagePart->m_ClickEvent->m_Action != cClickEvent::Action::NONE)

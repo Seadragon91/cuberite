@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Globals.h"
 #include "ChatMessagePart.h"
 #include "ChatMessageBuilder.h"
 
@@ -29,7 +28,7 @@ public:
 		m_ChatMessageBuilder->m_Parts.push_back(m_ChatMessageBuilder->m_Current.release());
 
 		AString Ret;
-		for each(auto & HoverPart in m_ChatMessageBuilder->m_Parts)
+		for (auto & HoverPart in m_ChatMessageBuilder->m_Parts)
 		{
 			Ret.append(HoverPart->CreateMessage());
 		}
