@@ -2,8 +2,8 @@
 #include "Globals.h"
 #include "ChatMessageBuilder.h"
 
-cChatMessageBuilder::cChatMessageBuilder(const AString & a_Text = ""):
-	m_Current(std::make_unique<cChatMessagePart>(a_Text))
+cChatMessageBuilder::cChatMessageBuilder(const AString & a_Text):
+	m_Current(cpp14::make_unique<cChatMessagePart>(a_Text))
 {
 }
 
@@ -11,7 +11,7 @@ cChatMessageBuilder::cChatMessageBuilder(const AString & a_Text = ""):
 cChatMessageBuilder * cChatMessageBuilder::Append(const AString & a_Text = "")
 {
 	m_Parts.push_back(std::move(m_Current));
-	m_Current.reset(&cChatMessagePart(a_Text));
+	m_Current.reset(new cChatMessagePart(a_Text));
 	return this;
 }
 

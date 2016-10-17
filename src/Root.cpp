@@ -598,7 +598,7 @@ void cRoot::ExecuteConsoleCommand(const AString & a_Cmd, cCommandOutputCallback 
 	}
 	else if (a_Cmd == "test")
 	{
-		std::unique_ptr<cChatMessageBuilder> test = std::make_unique<cChatMessageBuilder>("Hello World!");
+		std::unique_ptr<cChatMessageBuilder> test = cpp14::make_unique<cChatMessageBuilder>("Hello World!");
 		std::cout << test->CreateJsonString(false).c_str();
 		return;
 	}
