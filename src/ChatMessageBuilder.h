@@ -9,7 +9,7 @@
 class cChatMessageBuilder
 {
 public:
-	cChatMessageBuilder(const AString & a_Text = "");
+	cChatMessageBuilder(const AString & a_Text);
 
 	~cChatMessageBuilder() {}
 

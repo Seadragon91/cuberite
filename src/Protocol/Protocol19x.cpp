@@ -294,7 +294,7 @@ void cProtocol190::SendChat(const cCompositeChat & a_Message, eChatType a_Type, 
 
 
 
-void cProtocol190::SendChat(const cChatMessageBuilder & a_Message, eChatType a_Type, bool a_ShouldUseChatPrefixes)
+void cProtocol190::SendChat2(const cChatMessageBuilder & a_Message, eChatType a_Type, bool a_ShouldUseChatPrefixes)
 {
 	ASSERT(m_State == 3);  // In game mode?
 

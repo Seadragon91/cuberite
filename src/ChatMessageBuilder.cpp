@@ -2,7 +2,7 @@
 #include "Globals.h"
 #include "ChatMessageBuilder.h"
 
-cChatMessageBuilder::cChatMessageBuilder(const AString & a_Text):
+cChatMessageBuilder::cChatMessageBuilder(const AString & a_Text = ""):
 	m_Current(std::make_unique<cChatMessagePart>(a_Text))
 {
 }
@@ -86,7 +86,19 @@ AString cChatMessageBuilder::CreateJsonString(bool a_ShouldUseChatPrefixes) cons
 	Json::Value Msg;
 	for (auto & ChatMessagePart : m_Parts)
 	{
+		// Append text
 		Msg.append(ChatMessagePart->CreateMessage());
+
+		// Set color
+		Msg["color"] = ChatMessagePart->GetColor();
+
+		// Set style
+		Msg["bold"] = ChatMessagePart->m_Bold;
+		Msg["italic"] = ChatMessagePart->m_Italic;
+		Msg["underlined"] = ChatMessagePart->m_Underlined;
+		Msg["strikethrough"] = ChatMessagePart->m_Strikethrough;
+		Msg["obfuscated"] = ChatMessagePart->m_Obfuscated;
+
 		/*if (ChatMessagePart->m_ClickEvent->m_Action != cClickEvent::Action::NONE)
 		{
 			Json::Value Click;
@@ -132,8 +144,20 @@ AString cChatMessageBuilder::CreateJsonString(bool a_ShouldUseChatPrefixes) cons
 		}*/
 	}
 
+	// Add current part
+
+	// Append text
 	Msg.append(m_Current->CreateMessage());
 
+	// Set color
+	Msg["color"] = m_Current->GetColor();
+
+	// Set style
+	Msg["bold"] = m_Current->m_Bold;
+	Msg["italic"] = m_Current->m_Italic;
+	Msg["underlined"] = m_Current->m_Underlined;
+	Msg["strikethrough"] = m_Current->m_Strikethrough;
+	Msg["obfuscated"] = m_Current->m_Obfuscated;
 
 	return Msg.toStyledString();
 }

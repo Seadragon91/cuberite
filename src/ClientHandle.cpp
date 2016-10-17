@@ -2272,7 +2272,7 @@ void cClientHandle::SendChat(const cCompositeChat & a_Message)
 
 
 
-void cClientHandle::SendChat(const cChatMessageBuilder & a_Message)
+void cClientHandle::SendChat2(const cChatMessageBuilder & a_Message)
 {
 	cWorld * World = GetPlayer()->GetWorld();
 	if (World == nullptr)
@@ -2285,7 +2285,7 @@ void cClientHandle::SendChat(const cChatMessageBuilder & a_Message)
 	}
 
 	bool ShouldUsePrefixes = World->ShouldUseChatPrefixes();
-	m_Protocol->SendChat(a_Message, ctChatBox, ShouldUsePrefixes);
+	m_Protocol->SendChat2(a_Message, ctChatBox, ShouldUsePrefixes);
 }
 
 

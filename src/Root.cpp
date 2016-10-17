@@ -23,6 +23,7 @@
 #include "SettingsRepositoryInterface.h"
 #include "OverridesSettingsRepository.h"
 #include "Logger.h"
+#include "ChatMessageBuilder.h"
 
 #include <iostream>
 
@@ -593,6 +594,12 @@ void cRoot::ExecuteConsoleCommand(const AString & a_Cmd, cCommandOutputCallback 
 	{
 		m_StopEvent.Set();
 		m_InputThreadRunFlag.clear();
+		return;
+	}
+	else if (a_Cmd == "test")
+	{
+		std::unique_ptr<cChatMessageBuilder> test = std::make_unique<cChatMessageBuilder>("Hello World!");
+		std::cout << test->CreateJsonString(false).c_str();
 		return;
 	}
 
