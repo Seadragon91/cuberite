@@ -1,7 +1,9 @@
 #pragma once
 
-// #include "ClickEvent.h"
-// #include "HoverEvent.h"
+#include "ChatMessageBuilder.h"
+#include "ClickEvent.h"
+#include "HoverEvent.h"
+
 
 class cChatMessagePart
 {
@@ -9,6 +11,8 @@ public:
 	cChatMessagePart(const AString & a_Text = "") :
 		m_Text(a_Text),
 		m_Color(cChatColor::White),
+		m_ClickEvent(cpp14::make_unique<cClickEvent>(cClickEvent::Action::NONE, "")),
+		m_HoverEvent(cpp14::make_unique<cHoverEvent>(cHoverEvent::Action::NONE, cChatMessageBuilder(""))),
 		m_Bold(false),
 		m_Italic(false),
 		m_Underlined(false),
@@ -16,16 +20,6 @@ public:
 		m_Obfuscated(false)
 	{}
 	~cChatMessagePart() {}
-
-	AString CreateMessage(void)
-	{
-		if (m_Text.empty())
-			return "";
-
-		AString Ret;
-		Ret.append(m_Text);
-		return Ret;
-	}
 
 	const AString GetColor(void)
 	{	
@@ -116,11 +110,11 @@ public:
 	/** Text to insert. */
 	AString m_Insertion;
 
-	// /** Class for the click event. */
-	// std::unique_ptr<cClickEvent> m_ClickEvent;
-	// 
-	// /** Class for the hover event. */
-	// std::unique_ptr<cHoverEvent> m_HoverEvent;
+	/** Class for the click event. */
+	std::unique_ptr<cClickEvent> m_ClickEvent;
+	
+	/** Class for the hover event. */
+	std::unique_ptr<cHoverEvent> m_HoverEvent;
 };
 
 

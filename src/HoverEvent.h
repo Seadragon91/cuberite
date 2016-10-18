@@ -3,9 +3,6 @@
 #include "ChatMessagePart.h"
 #include "ChatMessageBuilder.h"
 
-class cChatMessagePart;
-class cChatMessageBuilder;
-
 class cHoverEvent
 {
 public:
@@ -18,10 +15,11 @@ public:
 
 	Action m_Action = Action::NONE;
 
-	cHoverEvent(Action a_Action, cChatMessageBuilder * a_ChatMessageBuilder) :
-		m_Action(a_Action)
+	cHoverEvent(Action a_Action, cChatMessageBuilder a_ChatMessageBuilder) :
+		m_Action(a_Action),
+		m_ChatMessageBuilder(cpp14::make_unique<cChatMessageBuilder>(a_ChatMessageBuilder))
 	{
-		m_ChatMessageBuilder.reset(a_ChatMessageBuilder);
+		
 	}
 
 	~cHoverEvent() {}
@@ -39,5 +37,5 @@ public:
 	}
 
 private:
-	std::unique_ptr<cChatMessageBuilder> m_ChatMessageBuilder = cpp14::make_unique<cChatMessageBuilder>();
+	std::unique_ptr<cChatMessageBuilder> m_ChatMessageBuilder;
 };

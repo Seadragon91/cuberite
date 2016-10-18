@@ -2,8 +2,8 @@
 
 #include "ChatColor.h"
 #include "ChatMessagePart.h"
-// #include "ClickEvent.h"
-// #include "HoverEvent.h"
+#include "ClickEvent.h"
+#include "HoverEvent.h"
 #include "json/json.h"
 
 class cChatMessageBuilder
@@ -29,18 +29,13 @@ public:
 
 	cChatMessageBuilder * Insertion(const AString & a_Insertion);
 
-	// cChatMessageBuilder * Click(cClickEvent::Action a_Action, const AString & a_Text);
+	cChatMessageBuilder * Click(cClickEvent::Action a_Action, const AString & a_Text);
 
-	// cChatMessageBuilder * Hover(cHoverEvent::Action a_Action, cChatMessageBuilder * a_ChatMessageBuilder);
+	cChatMessageBuilder * Hover(cHoverEvent::Action a_Action, cChatMessageBuilder * a_ChatMessageBuilder);
 
-	AString CreateJsonString(bool a_ShouldUseChatPrefixes) const;
+	const AString CreateJsonString(bool a_ShouldUseChatPrefixes) const;
 
 	typedef std::unique_ptr<cChatMessagePart> ChatMessagePartPtr;
-
-	void AddLastOne(void)
-	{
-		m_Parts.push_back(std::move(m_Current));
-	}
 
 	std::vector<ChatMessagePartPtr> & GetParts(void)
 	{
@@ -48,11 +43,16 @@ public:
 	}
 
 private:
+	void CreateCurrentPart(cChatMessagePart & a_ChatMessagePart, Json::Value & a_Value) const;
+
+	void AddClickPart(cChatMessagePart & a_ChatMessagePart, Json::Value & a_Value) const;
+
+	void AddHoverPart(cChatMessagePart & a_ChatMessagePart, Json::Value & a_Value) const;
+
 	/** Contains all parts for the chat message. */
 	std::vector<ChatMessagePartPtr> m_Parts;
 
 	/** Current chat message part */
 	ChatMessagePartPtr m_Current;
-
 };
 
