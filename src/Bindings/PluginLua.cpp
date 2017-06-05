@@ -977,6 +977,15 @@ bool cPluginLua::OnWeatherChanging(cWorld & a_World, eWeather & a_NewWeather)
 
 
 
+bool cPluginLua::OnWindowClicking(cPlayer & a_Player, cWindow & a_Window, cItem & a_ClickedItem, eClickAction a_ClickAction, int a_SlotNum)
+{
+	return CallSimpleHooks(cPluginManager::HOOK_WINDOW_CLICKING, &a_Player, &a_Window, &a_ClickedItem, a_ClickAction, a_SlotNum);
+}
+
+
+
+
+
 bool cPluginLua::OnWorldStarted(cWorld & a_World)
 {
 	return CallSimpleHooks(cPluginManager::HOOK_WORLD_STARTED, &a_World);
@@ -1081,6 +1090,7 @@ const char * cPluginLua::GetHookFnName(int a_HookType)
 		case cPluginManager::HOOK_UPDATING_SIGN:                return "OnUpdatingSign";
 		case cPluginManager::HOOK_WEATHER_CHANGED:              return "OnWeatherChanged";
 		case cPluginManager::HOOK_WEATHER_CHANGING:             return "OnWeatherChanging";
+		case cPluginManager::HOOK_WINDOW_CLICKING:              return "OnWindowClicking";
 		case cPluginManager::HOOK_WORLD_TICK:                   return "OnWorldTick";
 
 		case cPluginManager::HOOK_NUM_HOOKS:

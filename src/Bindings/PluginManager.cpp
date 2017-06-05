@@ -1508,6 +1508,25 @@ bool cPluginManager::CallHookWeatherChanging(cWorld & a_World, eWeather & a_NewW
 
 
 
+bool cPluginManager::CallHookWindowClicking(cPlayer & a_Player, cWindow & a_Window, cItem & a_ClickedItem, eClickAction a_ClickAction, int a_SlotNum)
+{
+	FIND_HOOK(HOOK_WINDOW_CLICKING);
+	VERIFY_HOOK;
+
+	for (PluginList::iterator itr = Plugins->second.begin(); itr != Plugins->second.end(); ++itr)
+	{
+		if ((*itr)->OnWindowClicking(a_Player, a_Window, a_ClickedItem, a_ClickAction, a_SlotNum))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+
+
 bool cPluginManager::CallHookWorldStarted(cWorld & a_World)
 {
 	FIND_HOOK(HOOK_WORLD_STARTED);

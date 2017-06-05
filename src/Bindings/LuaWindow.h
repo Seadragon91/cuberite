@@ -50,6 +50,8 @@ public:
 
 	// tolua_end
 
+	virtual bool IsLuaWindow(void) override { return true; };
+
 	/** Sets the Lua callback function to call when the window is about to close */
 	void SetOnClosing(cLuaState::cCallbackPtr && a_OnClosing);
 

@@ -403,9 +403,6 @@ public:
 
 	void SendExperience(void);
 
-	/** In UI windows, get the item that the player is dragging */
-	cItem & GetDraggingItem(void) {return m_DraggingItem; }
-
 	// In UI windows, when inventory-painting:
 	/** Clears the list of slots that are being inventory-painted. To be used by cWindow only */
 	void ClearInventoryPaintSlots(void);
@@ -417,6 +414,12 @@ public:
 	const cSlotNums & GetInventoryPaintSlots(void) const;
 
 	// tolua_begin
+
+	/** In UI windows, get the item that the player is dragging */
+	cItem & GetDraggingItem(void) { return m_DraggingItem; }
+
+	/** In UI windows, set the item that the player is dragging */
+	void SetDraggingItem(cItem & a_DraggingItem) { m_DraggingItem = a_DraggingItem; }
 
 	/** Returns the current relative maximum speed (takes current sprinting / flying state into account) */
 	double GetMaxSpeed(void) const;

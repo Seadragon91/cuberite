@@ -70,6 +70,8 @@ public:
 
 	// tolua_end
 
+	virtual bool IsLuaWindow(void) { return false; };
+
 	static const int c_NumInventorySlots = 36;
 
 	cWindow(WindowType a_WindowType, const AString & a_WindowTitle);

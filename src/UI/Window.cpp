@@ -209,6 +209,32 @@ void cWindow::Clicked(
 		return;
 	}
 
+	if (
+		IsLuaWindow() && (a_SlotNum >= 0) &&
+		(
+			(a_ClickAction != caLeftClickOutside) && (a_ClickAction != caRightClickOutside) &&
+			(a_ClickAction != caLeftClickOutsideHoldNothing) && (a_ClickAction != caRightClickOutsideHoldNothing)
+		)
+	)
+	{
+		int LocalSlotNum = a_SlotNum;
+		for (const auto & itr : m_SlotAreas)
+		{
+			if (LocalSlotNum < itr->GetNumSlots())
+			{
+				// Call hook
+				if (cRoot::Get()->GetPluginManager()->CallHookWindowClicking(a_Player, *this, cItem(a_ClickedItem), a_ClickAction, a_SlotNum))
+				{
+					// Plugin denied click action, bail out
+					a_Player.GetClientHandle()->SendInventorySlot(-1, -1, a_Player.GetDraggingItem());
+					BroadcastWholeWindow();
+					return;
+				}
+			}
+			LocalSlotNum -= itr->GetNumSlots();
+		}
+	}
+
 	switch (a_ClickAction)
 	{
 		case caLeftClickOutside:
@@ -593,6 +619,7 @@ void cWindow::OnLeftPaintEnd(cPlayer & a_Player)
 
 	const cSlotNums & SlotNums = a_Player.GetInventoryPaintSlots();
 	cItem ToDistribute(a_Player.GetDraggingItem());
+
 	int ToEachSlot = static_cast<int>(ToDistribute.m_ItemCount) / static_cast<int>(SlotNums.size());
 
 	int NumDistributed = DistributeItemToSlots(a_Player, ToDistribute, ToEachSlot, SlotNums);

@@ -11473,6 +11473,17 @@ a_Player:OpenWindow(Window);
 					},
 					Notes = "Returns the custom name of this player. If the player hasn't a custom name, it will return an empty string.",
 				},
+				GetDraggingItem =
+				{
+					Returns =
+					{
+						{
+							Name = "Item",
+							Type = "cItem",
+						},
+					},
+					Notes = "Returns the item that the player is dragging. In UI windows.",
+				},
 				GetEffectiveGameMode =
 				{
 					Returns =
@@ -12269,6 +12280,17 @@ a_Player:OpenWindow(Window);
 						},
 					},
 					Notes = "Sets the custom name for this player. If you want to disable the custom name, simply set an empty string. The custom name will be used in the tab-list, in the player nametag and in the tab-completion.",
+				},
+				SetDraggingItem =
+				{
+					Params =
+					{
+						{
+							Name = "Item",
+							Type = "cItem",
+						},
+					},
+					Notes = "Sets the item that the player is dragging. In UI windows.",
 				},
 				SetFlying =
 				{

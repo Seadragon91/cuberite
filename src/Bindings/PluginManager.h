@@ -24,6 +24,7 @@ class cPickup;
 class cPlayer;
 class cPlugin;
 class cProjectileEntity;
+class cWindow;
 class cWorld;
 class cSettingsRepositoryInterface;
 class cDeadlockDetect;
@@ -140,6 +141,7 @@ public:
 		HOOK_UPDATING_SIGN,
 		HOOK_WEATHER_CHANGED,
 		HOOK_WEATHER_CHANGING,
+		HOOK_WINDOW_CLICKING,
 		HOOK_WORLD_STARTED,
 		HOOK_WORLD_TICK,
 
@@ -284,6 +286,7 @@ public:
 	bool CallHookUpdatingSign             (cWorld & a_World, int a_BlockX, int a_BlockY, int a_BlockZ,       AString & a_Line1,       AString & a_Line2,       AString & a_Line3,       AString & a_Line4, cPlayer * a_Player);
 	bool CallHookWeatherChanged           (cWorld & a_World);
 	bool CallHookWeatherChanging          (cWorld & a_World, eWeather & a_NewWeather);
+	bool CallHookWindowClicking           (cPlayer & a_Player, cWindow & a_Window, cItem & a_ClickedItem, eClickAction a_ClickAction, int a_SlotNum);
 	bool CallHookWorldStarted             (cWorld & a_World);
 	bool CallHookWorldTick                (cWorld & a_World, std::chrono::milliseconds a_Dt, std::chrono::milliseconds a_LastTickDurationMSec);
 

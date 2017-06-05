@@ -135,6 +135,7 @@ public:
 	virtual bool OnUpdatingSign             (cWorld & a_World, int a_BlockX, int a_BlockY, int a_BlockZ,       AString & a_Line1,       AString & a_Line2,       AString & a_Line3,       AString & a_Line4, cPlayer * a_Player) override;
 	virtual bool OnWeatherChanged           (cWorld & a_World) override;
 	virtual bool OnWeatherChanging          (cWorld & a_World, eWeather & a_NewWeather) override;
+	virtual bool OnWindowClicking           (cPlayer & a_Player, cWindow & a_Window, cItem & a_ClickedItem, eClickAction a_ClickAction, int a_SlotNum) override;
 	virtual bool OnWorldStarted             (cWorld & a_World) override;
 	virtual bool OnWorldTick                (cWorld & a_World, std::chrono::milliseconds a_Dt, std::chrono::milliseconds a_LastTickDurationMSec) override;
 
