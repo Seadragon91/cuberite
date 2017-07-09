@@ -6,17 +6,44 @@
 #include "../BlockArea.h"
 #include "../Blocks/BlockHandler.h"
 #include "../BlockInServerPluginInterface.h"
+#include "../Root.h"
+#include "VillagerTradeJobs.h"
 
 
 
 
-
-cVillager::cVillager(eVillagerType VillagerType) :
+cVillager::cVillager(eVillagerType a_VillagerType) :
 	super("Villager", mtVillager, "entity.villager.hurt", "entity.villager.death", 0.6, 1.8),
 	m_ActionCountDown(-1),
-	m_Type(VillagerType),
-	m_VillagerAction(false)
+	// m_VillagerType(a_VillagerType),
+	m_VillagerType(vtFarmer),  // Harcoded for easier testing
+	m_VillagerAction(false),
+	// m_CareerType(GetRandomCareerType(m_VillagerType)),
+	m_CareerType(ctFarmer),  // Harcoded for easier testing
+	m_Merchant(cpp14::make_unique<cMerchant>(CareerTypeToString(m_CareerType)))
 {
+	LOG("m_CareerType = %d", m_CareerType);
+
+	auto mapTiersTradeRecipes = cRoot::Get()->GetVillagerTradeJobs()->GetMapTiersTradeRecipes(m_CareerType);
+	if (mapTiersTradeRecipes != nullptr)
+	{
+		m_MapTiersTradeRecipes = std::move(mapTiersTradeRecipes);
+
+		// Add trade recipes from tier 1
+		if (m_MapTiersTradeRecipes->find(1) == m_MapTiersTradeRecipes->end())
+		{
+			// WTF
+			return;
+		}
+
+		for (size_t i = 0; i < m_MapTiersTradeRecipes->at(1)->size(); i++)
+		{
+			m_Merchant->AddTradeRecipe(std::move(m_MapTiersTradeRecipes->at(1)->at(i)));
+		}
+
+		// Content for tier 1 has been moved, remove the key
+		m_MapTiersTradeRecipes->erase(1);
+	}
 }
 
 
@@ -60,17 +87,21 @@ void cVillager::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 		return;
 	}
 
+	if (m_Merchant->IsTrading())
+	{
+		StopMovingToPosition();  // Needs to be replaced with a better idea.
+								 // Villager should not move, but without calling the super tick the villager could be already dead.
+		return;
+	}
+
 	if (m_ActionCountDown > -1)
 	{
 		m_ActionCountDown--;
 		if (m_ActionCountDown == 0)
 		{
-			switch (m_Type)
+			if (m_VillagerType == vtFarmer)
 			{
-				case vtFarmer:
-				{
-					HandleFarmerPlaceCrops();
-				}
+				HandleFarmerPlaceCrops();
 			}
 		}
 		return;
@@ -78,12 +109,9 @@ void cVillager::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 
 	if (m_VillagerAction)
 	{
-		switch (m_Type)
+		if (m_VillagerType == vtFarmer)
 		{
-			case vtFarmer:
-			{
-				HandleFarmerTryHarvestCrops();
-			}
+			HandleFarmerPlaceCrops();
 		}
 		m_VillagerAction = false;
 		return;
@@ -95,12 +123,9 @@ void cVillager::Tick(std::chrono::milliseconds a_Dt, cChunk & a_Chunk)
 		return;
 	}
 
-	switch (m_Type)
+	if (m_VillagerType == vtFarmer)
 	{
-		case vtFarmer:
-		{
-			HandleFarmerPrepareFarmCrops();
-		}
+		HandleFarmerPrepareFarmCrops();
 	}
 }
 
@@ -211,3 +236,321 @@ bool cVillager::IsBlockFarmable(BLOCKTYPE a_BlockType)
 	return false;
 }
 
+
+
+
+
+
+cVillager::eCareerType cVillager::GetRandomCareerType(eVillagerType a_VillagerType)
+{
+	cFastRandom Rand;
+
+	switch (a_VillagerType)
+	{
+		case vtFarmer:
+		{
+			return static_cast<eCareerType>(Rand.RandInt(0, 3));
+		}
+		case vtLibrarian:
+		{
+			return static_cast<eCareerType>(Rand.RandInt(4, 5));
+		}
+		case vtPriest:
+		{
+			return ctCleric;
+		}
+		case vtBlacksmith:
+		{
+			return static_cast<eCareerType>(Rand.RandInt(7, 9));
+		}
+		case vtButcher:
+		{
+			return static_cast<eCareerType>(Rand.RandInt(10, 11));
+		}
+		case vtGeneric:
+		{
+			return ctGeneric;
+		}
+		default:
+		{
+			return ctGeneric;
+		}
+	}
+}
+
+
+
+
+
+bool cVillager::IsValidCareerTypeForVillager(eVillagerType a_VillagerType, eCareerType a_Career)
+{
+	switch (a_VillagerType)
+	{
+		case vtFarmer:
+		{
+			return ((a_Career >= 0) && (a_Career <= 3));
+		}
+		case vtLibrarian:
+		{
+			return ((a_Career == 4) || (a_Career == 5));
+		}
+		case vtPriest:
+		{
+			return a_Career == ctCleric;
+		}
+		case vtBlacksmith:
+		{
+			return ((a_Career >= 7) && (a_Career <= 9));
+		}
+		case vtButcher:
+		{
+			return ((a_Career == 10) || (a_Career == 11));
+		}
+		case vtGeneric:
+		{
+			return a_Career == ctGeneric;
+		}
+		default:
+		{
+			return false;
+		}
+	}
+}
+
+
+
+
+
+void cVillager::SetCareerType(eCareerType a_Career)
+{
+	if (IsValidCareerTypeForVillager(m_VillagerType, a_Career))
+	{
+		m_CareerType = a_Career;
+	}
+}
+
+
+
+
+
+int cVillager::CareerTypeToNBTInt(eCareerType a_CareerType)
+{
+	switch (a_CareerType)
+	{
+		// Farmer
+		case ctFarmer:
+		{
+			return 1;
+		}
+		case ctFisherman:
+		{
+			return 2;
+		}
+		case ctShepherd:
+		{
+			return 3;
+		}
+		case ctFletcher:
+		{
+			return 4;
+		}
+
+		// Librarian
+		case ctLibrarian:
+		{
+			return 1;
+		}
+		case ctCartographer:
+		{
+			return 2;
+		}
+
+		// Priest
+		case ctCleric:
+		{
+			return 1;
+		}
+
+		// Blacksmith
+		case ctArmorer:
+		{
+			return 1;
+		}
+		case ctWeaponSmith:
+		{
+			return 2;
+		}
+		case ctToolSmith:
+		{
+			return 3;
+		}
+
+		// Butcher
+		case ctButcher:
+		{
+			return 1;
+		}
+		case ctLeatherworker:
+		{
+			return 2;
+		}
+
+		// Generic
+		case ctGeneric:
+		case ctUnknown:
+		{
+			return 1;
+		}
+	}
+
+	LOGWARNING("Invalid career type for villager %d. Reset to ctGeneric (1).", a_CareerType);
+	return 1;
+}
+
+
+
+
+
+AString cVillager::CareerTypeToString(eCareerType a_CareerType)
+{
+	switch (a_CareerType)
+	{
+		// Farmer
+		case ctFarmer:
+		{
+			return "Farmer";
+		}
+		case ctFisherman:
+		{
+			return "Fisherman";
+		}
+		case ctShepherd:
+		{
+			return "Shepherd";
+		}
+		case ctFletcher:
+		{
+			return "Fletcher";
+		}
+
+		// Librarian
+		case ctLibrarian:
+		{
+			return "Librarian";
+		}
+		case ctCartographer:
+		{
+			return "Cartographer";
+		}
+
+		// Priest
+		case ctCleric:
+		{
+			return "Cleric";
+		}
+
+		// Blacksmith
+		case ctArmorer:
+		{
+			return "Armorer";
+		}
+		case ctWeaponSmith:
+		{
+			return "Weapon Smith";
+		}
+		case ctToolSmith:
+		{
+			return "Tool Smith";
+		}
+
+		// Butcher
+		case ctButcher:
+		{
+			return "Butcher";
+		}
+		case ctLeatherworker:
+		{
+			return "Leatherworker";
+		}
+
+		// Generic
+		case ctGeneric:
+		case ctUnknown:
+		{
+			return "Nitwit";
+		}
+	}
+
+	return "Nitwit";
+}
+
+
+
+
+
+cVillager::eCareerType cVillager::CareerNameToCareerType(const AString & a_CareerName)
+{
+	static const std::map<const AString, eCareerType> CarrerTypeToCareerName
+	{
+		// Brown Robed Villager
+		{ "Farmer", ctFarmer },
+		{ "Fisherman", ctFisherman },
+		{ "Shepherd", ctShepherd },
+		{ "Fletcher", ctFletcher },
+
+		// White Robed Villager
+		{ "Librarian", ctLibrarian },
+		{ "Cartographer", ctCartographer },
+
+		// Purple Robed Villager
+		{ "Cleric", ctCleric },
+
+		// Black Apron Villager
+		{ "Armorer", ctArmorer },
+		{ "Weapon Smith", ctWeaponSmith },
+		{ "Tool Smith", ctToolSmith },
+
+		// White Apron Villager
+		{ "Butcher", ctButcher },
+		{ "Leatherworker", ctLeatherworker },
+	};
+
+	auto pos = CarrerTypeToCareerName.find(a_CareerName);
+	if (pos != CarrerTypeToCareerName.end())
+	{
+		return pos->second;
+	}
+	return ctUnknown;
+}
+
+
+
+
+
+void cVillager::SetTradeRecipes(MapTiersTradeRecipes a_MapTiersTradeRecipes)
+{
+	if (a_MapTiersTradeRecipes == nullptr)
+	{
+		// Not trade recipes for this villager's career
+		return;
+	}
+
+	m_MapTiersTradeRecipes = std::move(a_MapTiersTradeRecipes);
+}
+
+
+
+
+
+void cVillager::OnRightClicked(cPlayer & a_Player)
+{
+	if (m_VillagerType == vtGeneric)
+	{
+		// The only villager that cannot trade
+		return;
+	}
+
+	// TODO: Set look vector, should look at player
+
+	m_Merchant->StartTrade(a_Player);
+}

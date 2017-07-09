@@ -19,8 +19,7 @@ Declares the 1.12 protocol classes:
 #pragma once
 
 #include "Protocol_1_11.h"
-
-
+#include "Merchant.h"
 
 
 
@@ -37,6 +36,10 @@ public:
 	virtual void SendResetTitle(void) override;
 	virtual void SendSpawnMob(const cMonster & a_Mob) override;
 	virtual void SendTitleTimes(int a_FadeInTicks, int a_DisplayTicks, int a_FadeOutTicks) override;
+	virtual void SendTradeList(const char a_WindowID, cMerchant & a_Merchant) override;
+	virtual void SendUpdateBlockEntity(cBlockEntity & a_BlockEntity) override;
+	// virtual void SendUnleashEntity(const cEntity & a_Entity) override;
+
 protected:
 	virtual bool HandlePacket(cByteBuffer & a_ByteBuffer, UInt32 a_PacketType) override;
 	virtual void HandlePacketAdvancementTab(cByteBuffer & a_ByteBuffer);

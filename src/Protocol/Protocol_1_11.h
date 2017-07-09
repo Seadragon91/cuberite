@@ -33,6 +33,7 @@ public:
 	virtual void SendResetTitle   (void) override;
 	virtual void SendSpawnMob     (const cMonster & a_Mob) override;
 	virtual void SendTitleTimes   (int a_FadeInTicks, int a_DisplayTicks, int a_FadeOutTicks) override;
+	virtual void SendTradeList(const char a_WindowID, cMerchant & a_Merchant) override {}
 
 protected:
 

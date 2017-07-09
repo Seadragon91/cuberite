@@ -31,6 +31,7 @@ class cPainting;
 class cPickup;
 class cPlayer;
 class cProtocol;
+class cMerchant;
 class cWindow;
 class cFallingBlock;
 class cCompositeChat;
@@ -218,6 +219,7 @@ public:  // tolua_export
 	void SendThunderbolt                (int a_BlockX, int a_BlockY, int a_BlockZ);
 	void SendTitleTimes                 (int a_FadeInTicks, int a_DisplayTicks, int a_FadeOutTicks);  // tolua_export
 	void SendTimeUpdate                 (Int64 a_WorldAge, Int64 a_TimeOfDay, bool a_DoDaylightCycle);  // tolua_export
+	void SendTradeList                  (const char a_WindowID, cMerchant & a_Merchant);
 	void SendUnleashEntity              (const cEntity & a_Entity);
 	void SendUnloadChunk                (int a_ChunkX, int a_ChunkZ);
 	void SendUpdateBlockEntity          (cBlockEntity & a_BlockEntity);

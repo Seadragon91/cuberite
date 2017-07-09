@@ -32,6 +32,7 @@
 #include "Protocol/ProtocolRecognizer.h"
 #include "CompositeChat.h"
 #include "Items/ItemSword.h"
+#include "Merchant.h"
 
 #include "mbedtls/md5.h"
 
@@ -666,10 +667,13 @@ void cClientHandle::RemoveFromAllChunks()
 
 
 
-void cClientHandle::HandleNPCTrade(int a_SlotNum)
+void cClientHandle::HandleNPCTrade(int a_TradeNumber)
 {
-	// TODO
-	LOGWARNING("%s: Not implemented yet", __FUNCTION__);
+	auto & pos = cMerchant::m_PlayerToMerchant.find(GetPlayer());
+	if (pos != cMerchant::m_PlayerToMerchant.end())
+	{
+		pos->second->m_SelectedTradeWindow = a_TradeNumber;
+	}
 }
 
 
@@ -3068,6 +3072,13 @@ void cClientHandle::SendTitleTimes(int a_FadeInTicks, int a_DisplayTicks, int a_
 void cClientHandle::SendTimeUpdate(Int64 a_WorldAge, Int64 a_TimeOfDay, bool a_DoDaylightCycle)
 {
 	m_Protocol->SendTimeUpdate(a_WorldAge, a_TimeOfDay, a_DoDaylightCycle);
+}
+
+
+
+void cClientHandle::SendTradeList(const char a_WindowID, cMerchant & a_Merchant)
+{
+	m_Protocol->SendTradeList(a_WindowID, a_Merchant);
 }
 
 

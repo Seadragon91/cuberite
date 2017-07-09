@@ -59,6 +59,7 @@ set(BINDING_DEPENDENCIES
 	../Bindings/Plugin.h
 	../Bindings/PluginLua.h
 	../Bindings/PluginManager.h
+	../Merchant.h
 	../BiomeDef.h
 	../BlockArea.h
 	../BlockEntities/BeaconEntity.h

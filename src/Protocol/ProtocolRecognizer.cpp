@@ -19,6 +19,7 @@
 #include "../World.h"
 #include "../ChatColor.h"
 #include "../Bindings/PluginManager.h"
+#include "Merchant.h"
 
 
 
@@ -923,6 +924,16 @@ void cProtocolRecognizer::SendTimeUpdate(Int64 a_WorldAge, Int64 a_TimeOfDay, bo
 {
 	ASSERT(m_Protocol != nullptr);
 	m_Protocol->SendTimeUpdate(a_WorldAge, a_TimeOfDay, a_DoDaylightCycle);
+}
+
+
+
+
+
+void cProtocolRecognizer::SendTradeList(const char a_WindowID, cMerchant & a_Merchant)
+{
+	ASSERT(m_Protocol != nullptr);
+	m_Protocol->SendTradeList(a_WindowID, a_Merchant);
 }
 
 

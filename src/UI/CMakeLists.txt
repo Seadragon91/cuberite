@@ -13,7 +13,8 @@ SET (SRCS
 	FurnaceWindow.cpp
 	HopperWindow.cpp
 	HorseWindow.cpp
-	InventoryWindow.cpp)
+	InventoryWindow.cpp
+	TradeWindow.cpp)
 
 SET (HDRS
 	SlotArea.h
@@ -31,6 +32,7 @@ SET (HDRS
 	HorseWindow.h
 	InventoryWindow.h
 	MinecartWithChestWindow.h
+	TradeWindow.h
 	WindowOwner.h)
 
 if(NOT MSVC)

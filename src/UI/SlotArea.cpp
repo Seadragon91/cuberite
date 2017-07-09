@@ -22,6 +22,7 @@
 #include "../EffectID.h"
 #include "../ClientHandle.h"
 #include "../Mobs/Horse.h"
+#include "../Merchant.h"
 
 
 
@@ -2644,6 +2645,174 @@ cItem * cSlotAreaTemporary::GetPlayerSlots(cPlayer & a_Player)
 
 
 
+// cSlotAreaTrade:
+cSlotAreaTrade::cSlotAreaTrade(cWindow & a_ParentWindow) :
+	cSlotAreaTemporary(3, a_ParentWindow)
+{
+}
+
+
+
+
+
+void cSlotAreaTrade::Clicked(cPlayer & a_Player, int a_SlotNum, eClickAction a_ClickAction, const cItem & a_ClickedItem)
+{
+	const cItem & DraggingItem = a_Player.GetDraggingItem();
+	if ((DraggingItem.m_ItemType == E_ITEM_STICK) && (DraggingItem.m_ItemCount >= 20))
+	{
+		SetSlot(2, a_Player, cItem(E_ITEM_ACACIA_BOAT));
+		m_ParentWindow.SendSlot(a_Player, this, 2);
+	}
+
+	super::Clicked(a_Player, a_SlotNum, a_ClickAction, a_ClickedItem);
+}
+
+
+
+
+
+void cSlotAreaTrade::ShiftClicked(cPlayer & a_Player, int a_SlotNum, const cItem & a_ClickedItem)
+{
+	super::ShiftClicked(a_Player, a_SlotNum, a_ClickedItem);
+}
+
+
+
+
+
+void cSlotAreaTrade::DistributeStack(cItem & a_ItemStack, cPlayer & a_Player, bool a_ShouldApply, bool a_KeepEmptySlots, bool a_BackFill)
+{
+	// Check first if the input slots are empty
+	if (!GetSlot(0, a_Player)->IsEmpty() && GetSlot(1, a_Player)->IsEmpty())
+	{
+		// Input slots are filled
+		return;
+	}
+
+	auto & pos = cMerchant::m_PlayerToMerchant.find(&a_Player);
+	if (pos == cMerchant::m_PlayerToMerchant.end())
+	{
+		// This should not happen
+		return;
+	}
+
+	// Get merchant instance
+	auto & merchant = pos->second;
+
+	// Get current trade recipe
+	auto & tradeRecipe = merchant->m_TradeRecipes.at(merchant->m_SelectedTradeWindow);
+
+	// Check if the item is a valid input item for this trade recipe
+	if (!merchant->IsValidInputItem(a_ItemStack))
+	{
+		return;
+	}
+
+	int SlotNum = -1;
+
+	// 1) First check if there is only one input item
+	if (tradeRecipe->m_InputItem2 == nullptr)
+	{
+		// The trade recipe has only one input item. Check if one of the input slots is filled
+		if (!GetSlot(0, a_Player)->IsEmpty() || GetSlot(1, a_Player)->IsEmpty())
+		{
+			// One of the input slots is filled, deny placing.
+			// TODO: Fill the slot
+			return;
+		}
+
+		SetSlot(0, a_Player, a_ItemStack);
+		m_ParentWindow.SendSlot(a_Player, this, 0);
+		return;
+	}
+
+	// 2) Check the item types and item damage
+
+	// Check first input item
+	if (
+		cMerchant::CheckIfItemsAreEquals()
+	)
+	{
+		SlotNum = 0;
+	}
+
+	if (SlotNum == 1)
+	{
+		// Check second input item
+
+	}
+
+	cBrewingRecipes * BR = cRoot::Get()->GetBrewingRecipes();
+	if (BR->IsBottle(a_ItemStack))
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			if (GetSlot(i, a_Player)->IsEmpty())
+			{
+				SlotNum = i;
+				break;
+			}
+		}
+
+		if (SlotNum == -1)
+		{
+			// All slots are full
+			return;
+		}
+	}
+	else if (BR->IsIngredient(a_ItemStack))
+	{
+		SlotNum = 3;
+	}
+	else
+	{
+		return;
+	}
+
+	const cItem * Slot = GetSlot(SlotNum, a_Player);
+	if (!Slot->IsEqual(a_ItemStack) && (!Slot->IsEmpty() || a_KeepEmptySlots))
+	{
+		// Different items
+		return;
+	}
+
+	char NumFit = ItemHandler(Slot->m_ItemType)->GetMaxStackSize() - Slot->m_ItemCount;
+	if (NumFit <= 0)
+	{
+		// Full stack already
+		return;
+	}
+	NumFit = std::min(NumFit, a_ItemStack.m_ItemCount);
+
+	if (a_ShouldApply)
+	{
+		cItem NewSlot(a_ItemStack);
+		NewSlot.m_ItemCount = Slot->m_ItemCount + NumFit;
+		SetSlot(SlotNum, a_Player, NewSlot);
+	}
+	a_ItemStack.m_ItemCount -= NumFit;
+	if (a_ItemStack.IsEmpty())
+	{
+		return;
+	}
+
+
+	super::DistributeStack(a_ItemStack, a_Player, a_ShouldApply, a_KeepEmptySlots, a_BackFill);
+}
+
+
+
+
+
+void cSlotAreaTrade::OnPlayerRemoved(cPlayer & a_Player)
+{
+	super::OnPlayerRemoved(a_Player);
+}
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // cSlotAreaHorse:
 
@@ -2697,8 +2866,6 @@ void cSlotAreaHorse::Clicked(cPlayer & a_Player, int a_SlotNum, eClickAction a_C
 
 	cSlotArea::Clicked(a_Player, a_SlotNum, a_ClickAction, a_ClickedItem);
 }
-
-
 
 
 
@@ -2757,8 +2924,3 @@ void cSlotAreaHorse::DistributeStack(cItem & a_ItemStack, cPlayer & a_Player, bo
 		--a_ItemStack.m_ItemCount;
 	}
 }
-
-
-
-
-

@@ -39,7 +39,7 @@
 #include "OverridesSettingsRepository.h"
 #include "Logger.h"
 #include "ClientHandle.h"
-
+#include "Mobs/VillagerTradeJobs.h"
 
 
 
@@ -210,6 +210,11 @@ void cRoot::Start(std::unique_ptr<cSettingsRepositoryInterface> a_OverridesRepo)
 	m_CraftingRecipes = new cCraftingRecipes();
 	m_FurnaceRecipe   = new cFurnaceRecipe();
 	m_BrewingRecipes.reset(new cBrewingRecipes());
+	m_VillagerTradeJobs.reset(new cVillagerTradeJobs());
+
+	auto StartReadFile = std::chrono::steady_clock::now();
+	m_VillagerTradeJobs->LoadTradeJobs();
+	LOG("File read time in %ldms", static_cast<long int>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - StartReadFile).count()));
 
 	LOGD("Loading worlds...");
 	LoadWorlds(dd, *settingsRepo, IsNewIniFile);

@@ -49,6 +49,7 @@ SET (SRCS
 	Logger.cpp
 	Map.cpp
 	MapManager.cpp
+	Merchant.cpp
 	MemorySettingsRepository.cpp
 	MobCensus.cpp
 	MobFamilyCollecter.cpp
@@ -129,6 +130,7 @@ SET (HDRS
 	MapManager.h
 	Matrix4.h
 	MemorySettingsRepository.h
+	Merchant.h
 	MobCensus.h
 	MobFamilyCollecter.h
 	MobProximityCounter.h

@@ -28,6 +28,7 @@ public:
 	cProtocol_1_10_0(cClientHandle * a_Client, const AString &a_ServerAddress, UInt16 a_ServerPort, UInt32 a_State);
 
 	virtual void SendSoundEffect(const AString & a_SoundName, double a_X, double a_Y, double a_Z, float a_Volume, float a_Pitch) override;
+	virtual void SendTradeList(const char a_WindowID, cMerchant & a_Merchant) override {}
 
 	virtual void HandlePacketStatusRequest(cByteBuffer & a_ByteBuffer) override;
 

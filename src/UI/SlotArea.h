@@ -9,7 +9,7 @@
 #pragma once
 
 #include "../Inventory.h"
-
+#include "../Merchant.h"
 
 
 
@@ -25,7 +25,8 @@ class cFurnaceEntity;
 class cMinecartWithChest;
 class cCraftingRecipe;
 class cWorld;
-
+// class cMerchant;
+// class cMerchant::cTradeRecipe;
 
 
 
@@ -545,3 +546,22 @@ private:
 
 
 
+
+class cSlotAreaTrade :
+	public cSlotAreaTemporary
+{
+	typedef cSlotAreaTemporary super;
+
+public:
+	cSlotAreaTrade(cWindow & a_ParentWindow);
+
+	// cSlotArea overrides:
+	virtual void Clicked(cPlayer & a_Player, int a_SlotNum, eClickAction a_ClickAction, const cItem & a_ClickedItem) override;
+	virtual void ShiftClicked(cPlayer & a_Player, int a_SlotNum, const cItem & a_ClickedItem) override;
+	virtual void DistributeStack(cItem & a_ItemStack, cPlayer & a_Player, bool a_ShouldApply, bool a_KeepEmptySlots, bool a_BackFill) override;
+
+	// cSlotAreaTemporary overrides:
+	virtual void OnPlayerRemoved(cPlayer & a_Player) override;
+
+// protected:
+};

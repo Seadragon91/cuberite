@@ -1,0 +1,135 @@
+{
+	"Farmer":
+	{
+		"tier_1":
+		[
+			{
+				"Input1":
+				{
+					"ItemName": "wheat",
+					"AmountMin": 18,
+					"AmountMax": 22
+				},
+				"Output":
+				{
+					"ItemName": "emerald"
+				}
+			},
+			{
+				"Input1":
+				{
+					"ItemName": "potato",
+					"AmountMin": 15,
+					"AmountMax": 19
+				},
+				"Output":
+				{
+					"ItemName": "emerald"
+				}
+			},
+			{
+				"Input1":
+				{
+					"ItemName": "carrot",
+					"AmountMin": 15,
+					"AmountMax": 19
+				},
+				"Output":
+				{
+					"ItemName": "emerald"
+				}
+			},
+			{
+				"Input1":
+				{
+					"ItemName": "emerald"
+				},
+				"Output":
+				{
+					"ItemName": "bread",
+					"AmountMin": 2,
+					"AmountMax": 4
+				}
+			}
+		],
+		"tier_2":
+		[
+			{
+				"Input1":
+				{
+					"ItemName": "pumpkin",
+					"AmountMin": 8,
+					"AmountMax": 13
+				},
+				"Output":
+				{
+					"ItemName": "emerald"
+				}
+			},
+			{
+				"Input1":
+				{
+					"ItemName": "emerald"
+				},
+				"Output":
+				{
+					"ItemName": "pumpkin_pie",
+					"AmountMin": 2,
+					"AmountMax": 3
+				}
+			}
+		],
+		"tier_3":
+		[
+			{
+				"Input1":
+				{
+					"ItemName": "melon",
+					"AmountMin": 7,
+					"AmountMax": 12
+				},
+				"Output":
+				{
+					"ItemName": "emerald"
+				}
+			},
+			{
+				"Input1":
+				{
+					"ItemName": "emerald"
+				},
+				"Output":
+				{
+					"ItemName": "apple",
+					"AmountMin": 5,
+					"AmountMax": 7
+				}
+			}
+		],
+		"tier_4":
+		[
+			{
+				"Input1":
+				{
+					"ItemName": "emerald"
+				},
+				"Output":
+				{
+					"ItemName": "cookie",
+					"AmountMin": 6,
+					"AmountMax": 10
+				}
+			},
+			{
+				"Input1":
+				{
+					"ItemName": "emerald"
+				},
+				"Output":
+				{
+					"ItemName": "cake"
+				}
+			}
+		]
+	}
+}

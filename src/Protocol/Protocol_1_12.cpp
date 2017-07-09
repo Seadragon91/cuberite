@@ -27,6 +27,7 @@ Implements the 1.12 protocol classes:
 #include "../ClientHandle.h"
 #include "../Bindings/PluginManager.h"
 
+#include "Merchant.h"
 
 
 
@@ -1238,6 +1239,66 @@ void cProtocol_1_12_1::HandlePacketStatusRequest(cByteBuffer & a_ByteBuffer)
 
 
 
+void cProtocol_1_12::SendUpdateBlockEntity(cBlockEntity & a_BlockEntity)
+{
+	ASSERT(m_State == 3);  // In game mode?
+
+	cPacketizer Pkt(*this, 0x09);  // Update tile entity packet
+	Pkt.WritePosition64(a_BlockEntity.GetPosX(), a_BlockEntity.GetPosY(), a_BlockEntity.GetPosZ());
+
+	Byte Action = 0;
+	switch (a_BlockEntity.GetBlockType())
+	{
+		case E_BLOCK_MOB_SPAWNER:   Action = 1;  break;  // Update mob spawner spinny mob thing
+		case E_BLOCK_COMMAND_BLOCK: Action = 2;  break;  // Update command block text
+		case E_BLOCK_BEACON:        Action = 3;  break;  // Update beacon entity
+		case E_BLOCK_HEAD:          Action = 4;  break;  // Update Mobhead entity
+		case E_BLOCK_FLOWER_POT:    Action = 5;  break;  // Update flower pot
+		case E_BLOCK_BED:           Action = 11; break;  // Update bed color
+		default: ASSERT(!"Unhandled or unimplemented BlockEntity update request!"); break;
+	}
+	Pkt.WriteBEUInt8(Action);
+
+	WriteBlockEntity(Pkt, a_BlockEntity);
+}
+
+
+
+
+
+void cProtocol_1_12::SendTradeList(const char a_WindowID, cMerchant & a_Merchant)
+{
+	ASSERT(m_State == 3);  // In game mode?
+
+	cPacketizer Pkt(*this, 0x18);  // Plugin message packet
+	Pkt.WriteString("MC|TrList");
+
+	Pkt.WriteBEInt32(a_WindowID);
+	Pkt.WriteBEUInt8(2);
+
+	for (const auto & tradeRecipe : a_Merchant.m_TradeRecipes)
+	{
+		WriteItem(Pkt, *tradeRecipe->m_InputItem1.get());
+		WriteItem(Pkt, *tradeRecipe->m_OutputItem.get());
+		if (tradeRecipe->m_InputItem2 != nullptr)
+		{
+			Pkt.WriteBool(true);  // Has second input item?
+			WriteItem(Pkt, *tradeRecipe->m_InputItem2.get());
+		}
+		else
+		{
+			Pkt.WriteBool(false);  // Has second input item?
+		}
+		Pkt.WriteBool(false);  // Is Disabled?
+		Pkt.WriteBEInt32(0);  // How many times already traded?
+		Pkt.WriteBEInt32(tradeRecipe->m_MaxTrades);  // Max times this trade can be done
+	}
+}
+
+
+
+
+
 bool cProtocol_1_12_1::HandlePacket(cByteBuffer & a_ByteBuffer, UInt32 a_PacketType)
 {
 	switch (m_State)
@@ -1328,6 +1389,7 @@ bool cProtocol_1_12_1::HandlePacket(cByteBuffer & a_ByteBuffer, UInt32 a_PacketT
 	m_Client->PacketUnknown(a_PacketType);
 	return false;
 }
+
 
 
 

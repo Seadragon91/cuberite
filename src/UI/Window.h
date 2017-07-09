@@ -28,6 +28,7 @@ class cMinecartWithChest;
 class cBeaconEntity;
 class cSlotArea;
 class cSlotAreaAnvil;
+class cSlotAreaTrade;
 class cWorld;
 
 typedef std::list<cPlayer *> cPlayerList;

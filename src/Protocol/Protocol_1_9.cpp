@@ -2962,8 +2962,8 @@ void cProtocol_1_9_0::HandleVanillaPluginMessage(cByteBuffer & a_ByteBuffer, con
 	}
 	else if (a_Channel == "MC|TrSel")
 	{
-		HANDLE_READ(a_ByteBuffer, ReadBEInt32, Int32, SlotNum);
-		m_Client->HandleNPCTrade(SlotNum);
+		HANDLE_READ(a_ByteBuffer, ReadBEInt32, Int32, TradeNumber);
+		m_Client->HandleNPCTrade(TradeNumber);
 		return;
 	}
 	LOG("Unhandled vanilla plugin channel: \"%s\".", a_Channel.c_str());
