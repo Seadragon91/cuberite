@@ -59,7 +59,7 @@ void cPluginManager::RefreshPluginList(void)
 	AString PluginsPath = GetPluginsPath() + "/";
 	AStringVector Contents = cFile::GetFolderContents(PluginsPath.c_str());
 	AStringVector Folders;
-	for (auto & item: Contents)
+	for (auto & item : Contents)
 	{
 		if (!cFile::IsFolder(PluginsPath + item))
 		{
@@ -70,7 +70,7 @@ void cPluginManager::RefreshPluginList(void)
 	}  // for item - Contents[]
 
 	// Set all plugins with invalid folders as psNotFound:
-	for (auto & plugin: m_Plugins)
+	for (auto & plugin : m_Plugins)
 	{
 		if (std::find(Folders.cbegin(), Folders.cend(), plugin->GetFolderName()) == Folders.end())
 		{
@@ -79,10 +79,10 @@ void cPluginManager::RefreshPluginList(void)
 	}  // for plugin - m_Plugins[]
 
 	// Add all newly discovered plugins:
-	for (auto & folder: Folders)
+	for (auto & folder : Folders)
 	{
 		bool hasFound = false;
-		for (auto & plugin: m_Plugins)
+		for (auto & plugin : m_Plugins)
 		{
 			if (plugin->GetFolderName() == folder)
 			{
@@ -125,7 +125,7 @@ void cPluginManager::ReloadPluginsNow(cSettingsRepositoryInterface & a_Settings)
 
 	// Load the plugins:
 	AStringVector ToLoad = GetFoldersToLoad(a_Settings);
-	for (auto & pluginFolder: ToLoad)
+	for (auto & pluginFolder : ToLoad)
 	{
 		LoadPlugin(pluginFolder);
 	}  // for pluginFolder - ToLoad[]
@@ -170,11 +170,11 @@ void cPluginManager::Tick(float a_Dt)
 		cCSLock Lock(m_CSPluginsToUnload);
 		std::swap(m_PluginsToUnload, PluginsToUnload);
 	}
-	for (auto & folder: PluginsToUnload)
+	for (auto & folder : PluginsToUnload)
 	{
 		bool HasUnloaded = false;
 		bool HasFound = false;
-		for (auto & plugin: m_Plugins)
+		for (auto & plugin : m_Plugins)
 		{
 			if (plugin->GetFolderName() == folder)
 			{
@@ -237,9 +237,9 @@ bool cPluginManager::GenericCallHook(PluginHook a_HookName, HookFunction a_HookF
 bool cPluginManager::CallHookBlockSpread(cWorld & a_World, int a_BlockX, int a_BlockY, int a_BlockZ, eSpreadSource a_Source)
 {
 	return GenericCallHook(HOOK_BLOCK_SPREAD, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnBlockSpread(a_World, a_BlockX, a_BlockY, a_BlockZ, a_Source);
-		}
+	{
+		return a_Plugin->OnBlockSpread(a_World, a_BlockX, a_BlockY, a_BlockZ, a_Source);
+	}
 	);
 }
 
@@ -254,9 +254,9 @@ bool cPluginManager::CallHookBlockToPickups(
 )
 {
 	return GenericCallHook(HOOK_BLOCK_TO_PICKUPS, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnBlockToPickups(a_World, a_Digger, a_BlockX, a_BlockY, a_BlockZ, a_BlockType, a_BlockMeta, a_Pickups);
-		}
+	{
+		return a_Plugin->OnBlockToPickups(a_World, a_Digger, a_BlockX, a_BlockY, a_BlockZ, a_BlockType, a_BlockMeta, a_Pickups);
+	}
 	);
 }
 
@@ -267,9 +267,9 @@ bool cPluginManager::CallHookBlockToPickups(
 bool cPluginManager::CallHookBrewingCompleted(cWorld & a_World, cBrewingstandEntity & a_Brewingstand)
 {
 	return GenericCallHook(HOOK_BREWING_COMPLETED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnBrewingCompleted(a_World, a_Brewingstand);
-		}
+	{
+		return a_Plugin->OnBrewingCompleted(a_World, a_Brewingstand);
+	}
 	);
 }
 
@@ -280,9 +280,9 @@ bool cPluginManager::CallHookBrewingCompleted(cWorld & a_World, cBrewingstandEnt
 bool cPluginManager::CallHookBrewingCompleting(cWorld & a_World, cBrewingstandEntity & a_Brewingstand)
 {
 	return GenericCallHook(HOOK_BREWING_COMPLETING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnBrewingCompleting(a_World, a_Brewingstand);
-		}
+	{
+		return a_Plugin->OnBrewingCompleting(a_World, a_Brewingstand);
+	}
 	);
 }
 
@@ -295,38 +295,38 @@ bool cPluginManager::CallHookChat(cPlayer & a_Player, AString & a_Message)
 	// Check if the message contains a command, execute it:
 	switch (HandleCommand(a_Player, a_Message, true))
 	{
-		case crExecuted:
-		{
-			// The command has executed successfully
-			return true;
-		}
+	case crExecuted:
+	{
+		// The command has executed successfully
+		return true;
+	}
 
-		case crBlocked:
-		{
-			// The command was blocked by a plugin using HOOK_EXECUTE_COMMAND
-			// The plugin has most likely sent a message to the player already
-			return true;
-		}
+	case crBlocked:
+	{
+		// The command was blocked by a plugin using HOOK_EXECUTE_COMMAND
+		// The plugin has most likely sent a message to the player already
+		return true;
+	}
 
-		case crError:
-		{
-			// An error in the plugin has prevented the command from executing. Report the error to the player:
-			a_Player.SendMessageFailure(Printf("Something went wrong while executing command \"%s\"", a_Message.c_str()));
-			return true;
-		}
+	case crError:
+	{
+		// An error in the plugin has prevented the command from executing. Report the error to the player:
+		a_Player.SendMessageFailure(Printf("Something went wrong while executing command \"%s\"", a_Message.c_str()));
+		return true;
+	}
 
-		case crNoPermission:
-		{
-			// The player is not allowed to execute this command
-			a_Player.SendMessageFailure(Printf("Forbidden command; insufficient privileges: \"%s\"", a_Message.c_str()));
-			return true;
-		}
+	case crNoPermission:
+	{
+		// The player is not allowed to execute this command
+		a_Player.SendMessageFailure(Printf("Forbidden command; insufficient privileges: \"%s\"", a_Message.c_str()));
+		return true;
+	}
 
-		case crUnknownCommand:
-		{
-			// This was not a known command, keep processing as a message
-			break;
-		}
+	case crUnknownCommand:
+	{
+		// This was not a known command, keep processing as a message
+		break;
+	}
 	}
 
 	// Check if the message is a command (starts with a slash). If it is, we know that it wasn't recognised:
@@ -340,9 +340,9 @@ bool cPluginManager::CallHookChat(cPlayer & a_Player, AString & a_Message)
 	}
 
 	return GenericCallHook(HOOK_CHAT, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnChat(a_Player, a_Message);
-		}
+	{
+		return a_Plugin->OnChat(a_Player, a_Message);
+	}
 	);
 }
 
@@ -353,9 +353,9 @@ bool cPluginManager::CallHookChat(cPlayer & a_Player, AString & a_Message)
 bool cPluginManager::CallHookChunkAvailable(cWorld & a_World, int a_ChunkX, int a_ChunkZ)
 {
 	return GenericCallHook(HOOK_CHUNK_AVAILABLE, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnChunkAvailable(a_World, a_ChunkX, a_ChunkZ);
-		}
+	{
+		return a_Plugin->OnChunkAvailable(a_World, a_ChunkX, a_ChunkZ);
+	}
 	);
 }
 
@@ -366,9 +366,9 @@ bool cPluginManager::CallHookChunkAvailable(cWorld & a_World, int a_ChunkX, int 
 bool cPluginManager::CallHookChunkGenerated(cWorld & a_World, int a_ChunkX, int a_ChunkZ, cChunkDesc * a_ChunkDesc)
 {
 	return GenericCallHook(HOOK_CHUNK_GENERATED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnChunkGenerated(a_World, a_ChunkX, a_ChunkZ, a_ChunkDesc);
-		}
+	{
+		return a_Plugin->OnChunkGenerated(a_World, a_ChunkX, a_ChunkZ, a_ChunkDesc);
+	}
 	);
 }
 
@@ -379,9 +379,9 @@ bool cPluginManager::CallHookChunkGenerated(cWorld & a_World, int a_ChunkX, int 
 bool cPluginManager::CallHookChunkGenerating(cWorld & a_World, int a_ChunkX, int a_ChunkZ, cChunkDesc * a_ChunkDesc)
 {
 	return GenericCallHook(HOOK_CHUNK_GENERATING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnChunkGenerating(a_World, a_ChunkX, a_ChunkZ, a_ChunkDesc);
-		}
+	{
+		return a_Plugin->OnChunkGenerating(a_World, a_ChunkX, a_ChunkZ, a_ChunkDesc);
+	}
 	);
 }
 
@@ -392,9 +392,9 @@ bool cPluginManager::CallHookChunkGenerating(cWorld & a_World, int a_ChunkX, int
 bool cPluginManager::CallHookChunkUnloaded(cWorld & a_World, int a_ChunkX, int a_ChunkZ)
 {
 	return GenericCallHook(HOOK_CHUNK_UNLOADED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnChunkUnloaded(a_World, a_ChunkX, a_ChunkZ);
-		}
+	{
+		return a_Plugin->OnChunkUnloaded(a_World, a_ChunkX, a_ChunkZ);
+	}
 	);
 }
 
@@ -405,9 +405,9 @@ bool cPluginManager::CallHookChunkUnloaded(cWorld & a_World, int a_ChunkX, int a
 bool cPluginManager::CallHookChunkUnloading(cWorld & a_World, int a_ChunkX, int a_ChunkZ)
 {
 	return GenericCallHook(HOOK_CHUNK_UNLOADING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnChunkUnloading(a_World, a_ChunkX, a_ChunkZ);
-		}
+	{
+		return a_Plugin->OnChunkUnloading(a_World, a_ChunkX, a_ChunkZ);
+	}
 	);
 }
 
@@ -418,9 +418,9 @@ bool cPluginManager::CallHookChunkUnloading(cWorld & a_World, int a_ChunkX, int 
 bool cPluginManager::CallHookCollectingPickup(cPlayer & a_Player, cPickup & a_Pickup)
 {
 	return GenericCallHook(HOOK_COLLECTING_PICKUP, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnCollectingPickup(a_Player, a_Pickup);
-		}
+	{
+		return a_Plugin->OnCollectingPickup(a_Player, a_Pickup);
+	}
 	);
 }
 
@@ -431,9 +431,9 @@ bool cPluginManager::CallHookCollectingPickup(cPlayer & a_Player, cPickup & a_Pi
 bool cPluginManager::CallHookCraftingNoRecipe(cPlayer & a_Player, cCraftingGrid & a_Grid, cCraftingRecipe & a_Recipe)
 {
 	return GenericCallHook(HOOK_CRAFTING_NO_RECIPE, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnCraftingNoRecipe(a_Player, a_Grid, a_Recipe);
-		}
+	{
+		return a_Plugin->OnCraftingNoRecipe(a_Player, a_Grid, a_Recipe);
+	}
 	);
 }
 
@@ -444,9 +444,9 @@ bool cPluginManager::CallHookCraftingNoRecipe(cPlayer & a_Player, cCraftingGrid 
 bool cPluginManager::CallHookDisconnect(cClientHandle & a_Client, const AString & a_Reason)
 {
 	return GenericCallHook(HOOK_DISCONNECT, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnDisconnect(a_Client, a_Reason);
-		}
+	{
+		return a_Plugin->OnDisconnect(a_Client, a_Reason);
+	}
 	);
 }
 
@@ -457,9 +457,9 @@ bool cPluginManager::CallHookDisconnect(cClientHandle & a_Client, const AString 
 bool cPluginManager::CallHookEntityAddEffect(cEntity & a_Entity, int a_EffectType, int a_EffectDurationTicks, int a_EffectIntensity, double a_DistanceModifier)
 {
 	return GenericCallHook(HOOK_ENTITY_ADD_EFFECT, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnEntityAddEffect(a_Entity, a_EffectType, a_EffectDurationTicks, a_EffectIntensity, a_DistanceModifier);
-		}
+	{
+		return a_Plugin->OnEntityAddEffect(a_Entity, a_EffectType, a_EffectDurationTicks, a_EffectIntensity, a_DistanceModifier);
+	}
 	);
 }
 
@@ -470,9 +470,9 @@ bool cPluginManager::CallHookEntityAddEffect(cEntity & a_Entity, int a_EffectTyp
 bool cPluginManager::CallHookEntityTeleport(cEntity & a_Entity, const Vector3d & a_OldPosition, const Vector3d & a_NewPosition)
 {
 	return GenericCallHook(HOOK_ENTITY_TELEPORT, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnEntityTeleport(a_Entity, a_OldPosition, a_NewPosition);
-		}
+	{
+		return a_Plugin->OnEntityTeleport(a_Entity, a_OldPosition, a_NewPosition);
+	}
 	);
 }
 
@@ -483,9 +483,9 @@ bool cPluginManager::CallHookEntityTeleport(cEntity & a_Entity, const Vector3d &
 bool cPluginManager::CallHookEntityChangingWorld(cEntity & a_Entity, cWorld & a_World)
 {
 	return GenericCallHook(HOOK_ENTITY_CHANGING_WORLD, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnEntityChangingWorld(a_Entity, a_World);
-		}
+	{
+		return a_Plugin->OnEntityChangingWorld(a_Entity, a_World);
+	}
 	);
 }
 
@@ -496,9 +496,9 @@ bool cPluginManager::CallHookEntityChangingWorld(cEntity & a_Entity, cWorld & a_
 bool cPluginManager::CallHookEntityChangedWorld(cEntity & a_Entity, cWorld & a_World)
 {
 	return GenericCallHook(HOOK_ENTITY_CHANGED_WORLD, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnEntityChangedWorld(a_Entity, a_World);
-		}
+	{
+		return a_Plugin->OnEntityChangedWorld(a_Entity, a_World);
+	}
 	);
 }
 
@@ -533,9 +533,9 @@ bool cPluginManager::CallHookExecuteCommand(cPlayer * a_Player, const AStringVec
 	}
 
 	return GenericCallHook(HOOK_EXECUTE_COMMAND, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnExecuteCommand(a_Player, a_Split, a_EntireCommand, a_Result);
-		}
+	{
+		return a_Plugin->OnExecuteCommand(a_Player, a_Split, a_EntireCommand, a_Result);
+	}
 	);
 }
 
@@ -546,9 +546,9 @@ bool cPluginManager::CallHookExecuteCommand(cPlayer * a_Player, const AStringVec
 bool cPluginManager::CallHookExploded(cWorld & a_World, double a_ExplosionSize, bool a_CanCauseFire, double a_X, double a_Y, double a_Z, eExplosionSource a_Source, void * a_SourceData)
 {
 	return GenericCallHook(HOOK_EXPLODED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnExploded(a_World, a_ExplosionSize, a_CanCauseFire, a_X, a_Y, a_Z, a_Source, a_SourceData);
-		}
+	{
+		return a_Plugin->OnExploded(a_World, a_ExplosionSize, a_CanCauseFire, a_X, a_Y, a_Z, a_Source, a_SourceData);
+	}
 	);
 }
 
@@ -559,9 +559,9 @@ bool cPluginManager::CallHookExploded(cWorld & a_World, double a_ExplosionSize, 
 bool cPluginManager::CallHookExploding(cWorld & a_World, double & a_ExplosionSize, bool & a_CanCauseFire, double a_X, double a_Y, double a_Z, eExplosionSource a_Source, void * a_SourceData)
 {
 	return GenericCallHook(HOOK_EXPLODING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnExploding(a_World, a_ExplosionSize, a_CanCauseFire, a_X, a_Y, a_Z, a_Source, a_SourceData);
-		}
+	{
+		return a_Plugin->OnExploding(a_World, a_ExplosionSize, a_CanCauseFire, a_X, a_Y, a_Z, a_Source, a_SourceData);
+	}
 	);
 }
 
@@ -572,9 +572,9 @@ bool cPluginManager::CallHookExploding(cWorld & a_World, double & a_ExplosionSiz
 bool cPluginManager::CallHookHandshake(cClientHandle & a_ClientHandle, const AString & a_Username)
 {
 	return GenericCallHook(HOOK_HANDSHAKE, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnHandshake(a_ClientHandle, a_Username);
-		}
+	{
+		return a_Plugin->OnHandshake(a_ClientHandle, a_Username);
+	}
 	);
 }
 
@@ -585,9 +585,9 @@ bool cPluginManager::CallHookHandshake(cClientHandle & a_ClientHandle, const ASt
 bool cPluginManager::CallHookHopperPullingItem(cWorld & a_World, cHopperEntity & a_Hopper, int a_DstSlotNum, cBlockEntityWithItems & a_SrcEntity, int a_SrcSlotNum)
 {
 	return GenericCallHook(HOOK_HOPPER_PULLING_ITEM, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnHopperPullingItem(a_World, a_Hopper, a_DstSlotNum, a_SrcEntity, a_SrcSlotNum);
-		}
+	{
+		return a_Plugin->OnHopperPullingItem(a_World, a_Hopper, a_DstSlotNum, a_SrcEntity, a_SrcSlotNum);
+	}
 	);
 }
 
@@ -598,9 +598,9 @@ bool cPluginManager::CallHookHopperPullingItem(cWorld & a_World, cHopperEntity &
 bool cPluginManager::CallHookHopperPushingItem(cWorld & a_World, cHopperEntity & a_Hopper, int a_SrcSlotNum, cBlockEntityWithItems & a_DstEntity, int a_DstSlotNum)
 {
 	return GenericCallHook(HOOK_HOPPER_PUSHING_ITEM, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnHopperPushingItem(a_World, a_Hopper, a_SrcSlotNum, a_DstEntity, a_DstSlotNum);
-		}
+	{
+		return a_Plugin->OnHopperPushingItem(a_World, a_Hopper, a_SrcSlotNum, a_DstEntity, a_DstSlotNum);
+	}
 	);
 }
 
@@ -611,9 +611,9 @@ bool cPluginManager::CallHookHopperPushingItem(cWorld & a_World, cHopperEntity &
 bool cPluginManager::CallHookKilled(cEntity & a_Victim, TakeDamageInfo & a_TDI, AString & a_DeathMessage)
 {
 	return GenericCallHook(HOOK_KILLED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnKilled(a_Victim, a_TDI, a_DeathMessage);
-		}
+	{
+		return a_Plugin->OnKilled(a_Victim, a_TDI, a_DeathMessage);
+	}
 	);
 }
 
@@ -624,9 +624,9 @@ bool cPluginManager::CallHookKilled(cEntity & a_Victim, TakeDamageInfo & a_TDI, 
 bool cPluginManager::CallHookKilling(cEntity & a_Victim, cEntity * a_Killer, TakeDamageInfo & a_TDI)
 {
 	return GenericCallHook(HOOK_KILLING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnKilling(a_Victim, a_Killer, a_TDI);
-		}
+	{
+		return a_Plugin->OnKilling(a_Victim, a_Killer, a_TDI);
+	}
 	);
 }
 
@@ -637,9 +637,9 @@ bool cPluginManager::CallHookKilling(cEntity & a_Victim, cEntity * a_Killer, Tak
 bool cPluginManager::CallHookLogin(cClientHandle & a_Client, UInt32 a_ProtocolVersion, const AString & a_Username)
 {
 	return GenericCallHook(HOOK_LOGIN, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnLogin(a_Client, a_ProtocolVersion, a_Username);
-		}
+	{
+		return a_Plugin->OnLogin(a_Client, a_ProtocolVersion, a_Username);
+	}
 	);
 }
 
@@ -650,9 +650,9 @@ bool cPluginManager::CallHookLogin(cClientHandle & a_Client, UInt32 a_ProtocolVe
 bool cPluginManager::CallHookLoginForge(cClientHandle & a_Client, AStringMap & a_Mods)
 {
 	return GenericCallHook(HOOK_LOGIN_FORGE, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnLoginForge(a_Client, a_Mods);
-		}
+	{
+		return a_Plugin->OnLoginForge(a_Client, a_Mods);
+	}
 	);
 }
 
@@ -663,9 +663,9 @@ bool cPluginManager::CallHookLoginForge(cClientHandle & a_Client, AStringMap & a
 bool cPluginManager::CallHookPlayerAnimation(cPlayer & a_Player, int a_Animation)
 {
 	return GenericCallHook(HOOK_PLAYER_ANIMATION, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerAnimation(a_Player, a_Animation);
-		}
+	{
+		return a_Plugin->OnPlayerAnimation(a_Player, a_Animation);
+	}
 	);
 }
 
@@ -676,9 +676,9 @@ bool cPluginManager::CallHookPlayerAnimation(cPlayer & a_Player, int a_Animation
 bool cPluginManager::CallHookPlayerBreakingBlock(cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, BLOCKTYPE a_BlockType, NIBBLETYPE a_BlockMeta)
 {
 	return GenericCallHook(HOOK_PLAYER_BREAKING_BLOCK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerBreakingBlock(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_BlockType, a_BlockMeta);
-		}
+	{
+		return a_Plugin->OnPlayerBreakingBlock(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_BlockType, a_BlockMeta);
+	}
 	);
 }
 
@@ -689,9 +689,9 @@ bool cPluginManager::CallHookPlayerBreakingBlock(cPlayer & a_Player, int a_Block
 bool cPluginManager::CallHookPlayerBrokenBlock(cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, BLOCKTYPE a_BlockType, NIBBLETYPE a_BlockMeta)
 {
 	return GenericCallHook(HOOK_PLAYER_BROKEN_BLOCK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerBrokenBlock(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_BlockType, a_BlockMeta);
-		}
+	{
+		return a_Plugin->OnPlayerBrokenBlock(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_BlockType, a_BlockMeta);
+	}
 	);
 }
 
@@ -702,9 +702,9 @@ bool cPluginManager::CallHookPlayerBrokenBlock(cPlayer & a_Player, int a_BlockX,
 bool cPluginManager::CallHookPlayerDestroyed(cPlayer & a_Player)
 {
 	return GenericCallHook(HOOK_PLAYER_DESTROYED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerDestroyed(a_Player);
-		}
+	{
+		return a_Plugin->OnPlayerDestroyed(a_Player);
+	}
 	);
 }
 
@@ -715,9 +715,9 @@ bool cPluginManager::CallHookPlayerDestroyed(cPlayer & a_Player)
 bool cPluginManager::CallHookPlayerEating(cPlayer & a_Player)
 {
 	return GenericCallHook(HOOK_PLAYER_EATING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerEating(a_Player);
-		}
+	{
+		return a_Plugin->OnPlayerEating(a_Player);
+	}
 	);
 }
 
@@ -728,9 +728,9 @@ bool cPluginManager::CallHookPlayerEating(cPlayer & a_Player)
 bool cPluginManager::CallHookPlayerFoodLevelChange(cPlayer & a_Player, int a_NewFoodLevel)
 {
 	return GenericCallHook(HOOK_PLAYER_FOOD_LEVEL_CHANGE, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerFoodLevelChange(a_Player, a_NewFoodLevel);
-		}
+	{
+		return a_Plugin->OnPlayerFoodLevelChange(a_Player, a_NewFoodLevel);
+	}
 	);
 }
 
@@ -741,9 +741,9 @@ bool cPluginManager::CallHookPlayerFoodLevelChange(cPlayer & a_Player, int a_New
 bool cPluginManager::CallHookPlayerFished(cPlayer & a_Player, const cItems & a_Reward)
 {
 	return GenericCallHook(HOOK_PLAYER_FISHED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerFished(a_Player, a_Reward);
-		}
+	{
+		return a_Plugin->OnPlayerFished(a_Player, a_Reward);
+	}
 	);
 }
 
@@ -754,9 +754,9 @@ bool cPluginManager::CallHookPlayerFished(cPlayer & a_Player, const cItems & a_R
 bool cPluginManager::CallHookPlayerFishing(cPlayer & a_Player, cItems a_Reward)
 {
 	return GenericCallHook(HOOK_PLAYER_FISHING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerFishing(a_Player, a_Reward);
-		}
+	{
+		return a_Plugin->OnPlayerFishing(a_Player, a_Reward);
+	}
 	);
 }
 
@@ -767,9 +767,9 @@ bool cPluginManager::CallHookPlayerFishing(cPlayer & a_Player, cItems a_Reward)
 bool cPluginManager::CallHookPlayerJoined(cPlayer & a_Player)
 {
 	return GenericCallHook(HOOK_PLAYER_JOINED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerJoined(a_Player);
-		}
+	{
+		return a_Plugin->OnPlayerJoined(a_Player);
+	}
 	);
 }
 
@@ -780,9 +780,9 @@ bool cPluginManager::CallHookPlayerJoined(cPlayer & a_Player)
 bool cPluginManager::CallHookPlayerLeftClick(cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, char a_Status)
 {
 	return GenericCallHook(HOOK_PLAYER_LEFT_CLICK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerLeftClick(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_Status);
-		}
+	{
+		return a_Plugin->OnPlayerLeftClick(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_Status);
+	}
 	);
 }
 
@@ -793,9 +793,9 @@ bool cPluginManager::CallHookPlayerLeftClick(cPlayer & a_Player, int a_BlockX, i
 bool cPluginManager::CallHookPlayerMoving(cPlayer & a_Player, const Vector3d & a_OldPosition, const Vector3d & a_NewPosition)
 {
 	return GenericCallHook(HOOK_PLAYER_MOVING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerMoving(a_Player, a_OldPosition, a_NewPosition);
-		}
+	{
+		return a_Plugin->OnPlayerMoving(a_Player, a_OldPosition, a_NewPosition);
+	}
 	);
 }
 
@@ -806,9 +806,9 @@ bool cPluginManager::CallHookPlayerMoving(cPlayer & a_Player, const Vector3d & a
 bool cPluginManager::CallHookPlayerOpeningWindow(cPlayer & a_Player, cWindow & a_Window)
 {
 	return GenericCallHook(HOOK_PLAYER_OPENING_WINDOW, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerOpeningWindow(a_Player, a_Window);
-		}
+	{
+		return a_Plugin->OnPlayerOpeningWindow(a_Player, a_Window);
+	}
 	);
 }
 
@@ -819,9 +819,9 @@ bool cPluginManager::CallHookPlayerOpeningWindow(cPlayer & a_Player, cWindow & a
 bool cPluginManager::CallHookPlayerPlacedBlock(cPlayer & a_Player, const sSetBlock & a_BlockChange)
 {
 	return GenericCallHook(HOOK_PLAYER_PLACED_BLOCK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerPlacedBlock(a_Player, a_BlockChange);
-		}
+	{
+		return a_Plugin->OnPlayerPlacedBlock(a_Player, a_BlockChange);
+	}
 	);
 }
 
@@ -832,9 +832,9 @@ bool cPluginManager::CallHookPlayerPlacedBlock(cPlayer & a_Player, const sSetBlo
 bool cPluginManager::CallHookPlayerPlacingBlock(cPlayer & a_Player, const sSetBlock & a_BlockChange)
 {
 	return GenericCallHook(HOOK_PLAYER_PLACING_BLOCK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerPlacingBlock(a_Player, a_BlockChange);
-		}
+	{
+		return a_Plugin->OnPlayerPlacingBlock(a_Player, a_BlockChange);
+	}
 	);
 }
 
@@ -845,9 +845,9 @@ bool cPluginManager::CallHookPlayerPlacingBlock(cPlayer & a_Player, const sSetBl
 bool cPluginManager::CallHookPlayerRightClick(cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, int a_CursorX, int a_CursorY, int a_CursorZ)
 {
 	return GenericCallHook(HOOK_PLAYER_RIGHT_CLICK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerRightClick(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ);
-		}
+	{
+		return a_Plugin->OnPlayerRightClick(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ);
+	}
 	);
 }
 
@@ -858,29 +858,22 @@ bool cPluginManager::CallHookPlayerRightClick(cPlayer & a_Player, int a_BlockX, 
 bool cPluginManager::CallHookPlayerRightClickingEntity(cPlayer & a_Player, cEntity & a_Entity)
 {
 	return GenericCallHook(HOOK_PLAYER_RIGHT_CLICKING_ENTITY, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerRightClickingEntity(a_Player, a_Entity);
-		}
+	{
+		return a_Plugin->OnPlayerRightClickingEntity(a_Player, a_Entity);
+	}
 	);
 }
 
 
 
 
-
 bool cPluginManager::CallHookPlayerEditedBook(cPlayer & a_Player, cBookContent & a_BookContent, bool a_IsSigned)
 {
-	FIND_HOOK(HOOK_PLAYER_EDITED_BOOK);
-	VERIFY_HOOK;
-
-	for (PluginList::iterator itr = Plugins->second.begin(); itr != Plugins->second.end(); ++itr)
+	return GenericCallHook(HOOK_PLAYER_SHOOTING, [&](cPlugin * a_Plugin)
 	{
-		if ((*itr)->OnPlayerEditedBook(a_Player, a_BookContent, a_IsSigned))
-		{
-			return true;
-		}
+		return a_Plugin->OnPlayerEditedBook(a_Player, a_BookContent, a_IsSigned);
 	}
-	return false;
+	);
 }
 
 
@@ -889,17 +882,11 @@ bool cPluginManager::CallHookPlayerEditedBook(cPlayer & a_Player, cBookContent &
 
 bool cPluginManager::CallHookPlayerEditingBook(cPlayer & a_Player, cBookContent & a_BookContent, bool a_IsSigned)
 {
-	FIND_HOOK(HOOK_PLAYER_EDITING_BOOK);
-	VERIFY_HOOK;
-
-	for (PluginList::iterator itr = Plugins->second.begin(); itr != Plugins->second.end(); ++itr)
+	return GenericCallHook(HOOK_PLAYER_SHOOTING, [&](cPlugin * a_Plugin)
 	{
-		if ((*itr)->OnPlayerEditingBook(a_Player, a_BookContent, a_IsSigned))
-		{
-			return true;
-		}
+		return a_Plugin->OnPlayerEditingBook(a_Player, a_BookContent, a_IsSigned);
 	}
-	return false;
+	);
 }
 
 
@@ -909,9 +896,9 @@ bool cPluginManager::CallHookPlayerEditingBook(cPlayer & a_Player, cBookContent 
 bool cPluginManager::CallHookPlayerShooting(cPlayer & a_Player)
 {
 	return GenericCallHook(HOOK_PLAYER_SHOOTING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerShooting(a_Player);
-		}
+	{
+		return a_Plugin->OnPlayerShooting(a_Player);
+	}
 	);
 }
 
@@ -922,9 +909,9 @@ bool cPluginManager::CallHookPlayerShooting(cPlayer & a_Player)
 bool cPluginManager::CallHookPlayerSpawned(cPlayer & a_Player)
 {
 	return GenericCallHook(HOOK_PLAYER_SPAWNED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerSpawned(a_Player);
-		}
+	{
+		return a_Plugin->OnPlayerSpawned(a_Player);
+	}
 	);
 }
 
@@ -935,9 +922,9 @@ bool cPluginManager::CallHookPlayerSpawned(cPlayer & a_Player)
 bool cPluginManager::CallHookPlayerTossingItem(cPlayer & a_Player)
 {
 	return GenericCallHook(HOOK_PLAYER_TOSSING_ITEM, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerTossingItem(a_Player);
-		}
+	{
+		return a_Plugin->OnPlayerTossingItem(a_Player);
+	}
 	);
 }
 
@@ -948,9 +935,9 @@ bool cPluginManager::CallHookPlayerTossingItem(cPlayer & a_Player)
 bool cPluginManager::CallHookPlayerUsedBlock(cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, int a_CursorX, int a_CursorY, int a_CursorZ, BLOCKTYPE a_BlockType, NIBBLETYPE a_BlockMeta)
 {
 	return GenericCallHook(HOOK_PLAYER_USED_BLOCK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerUsedBlock(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ, a_BlockType, a_BlockMeta);
-		}
+	{
+		return a_Plugin->OnPlayerUsedBlock(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ, a_BlockType, a_BlockMeta);
+	}
 	);
 }
 
@@ -961,9 +948,9 @@ bool cPluginManager::CallHookPlayerUsedBlock(cPlayer & a_Player, int a_BlockX, i
 bool cPluginManager::CallHookPlayerUsedItem(cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, int a_CursorX, int a_CursorY, int a_CursorZ)
 {
 	return GenericCallHook(HOOK_PLAYER_USED_ITEM, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerUsedItem(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ);
-		}
+	{
+		return a_Plugin->OnPlayerUsedItem(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ);
+	}
 	);
 }
 
@@ -974,9 +961,9 @@ bool cPluginManager::CallHookPlayerUsedItem(cPlayer & a_Player, int a_BlockX, in
 bool cPluginManager::CallHookPlayerUsingBlock(cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, int a_CursorX, int a_CursorY, int a_CursorZ, BLOCKTYPE a_BlockType, NIBBLETYPE a_BlockMeta)
 {
 	return GenericCallHook(HOOK_PLAYER_USING_BLOCK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerUsingBlock(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ, a_BlockType, a_BlockMeta);
-		}
+	{
+		return a_Plugin->OnPlayerUsingBlock(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ, a_BlockType, a_BlockMeta);
+	}
 	);
 }
 
@@ -987,9 +974,9 @@ bool cPluginManager::CallHookPlayerUsingBlock(cPlayer & a_Player, int a_BlockX, 
 bool cPluginManager::CallHookPlayerUsingItem(cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, int a_CursorX, int a_CursorY, int a_CursorZ)
 {
 	return GenericCallHook(HOOK_PLAYER_USING_ITEM, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPlayerUsingItem(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ);
-		}
+	{
+		return a_Plugin->OnPlayerUsingItem(a_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace, a_CursorX, a_CursorY, a_CursorZ);
+	}
 	);
 }
 
@@ -1000,9 +987,9 @@ bool cPluginManager::CallHookPlayerUsingItem(cPlayer & a_Player, int a_BlockX, i
 bool cPluginManager::CallHookPluginMessage(cClientHandle & a_Client, const AString & a_Channel, const AString & a_Message)
 {
 	return GenericCallHook(HOOK_PLUGIN_MESSAGE, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPluginMessage(a_Client, a_Channel, a_Message);
-		}
+	{
+		return a_Plugin->OnPluginMessage(a_Client, a_Channel, a_Message);
+	}
 	);
 }
 
@@ -1036,9 +1023,9 @@ bool cPluginManager::CallHookPluginsLoaded(void)
 bool cPluginManager::CallHookPostCrafting(cPlayer & a_Player, cCraftingGrid & a_Grid, cCraftingRecipe & a_Recipe)
 {
 	return GenericCallHook(HOOK_POST_CRAFTING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPostCrafting(a_Player, a_Grid, a_Recipe);
-		}
+	{
+		return a_Plugin->OnPostCrafting(a_Player, a_Grid, a_Recipe);
+	}
 	);
 }
 
@@ -1049,9 +1036,9 @@ bool cPluginManager::CallHookPostCrafting(cPlayer & a_Player, cCraftingGrid & a_
 bool cPluginManager::CallHookPreCrafting(cPlayer & a_Player, cCraftingGrid & a_Grid, cCraftingRecipe & a_Recipe)
 {
 	return GenericCallHook(HOOK_PRE_CRAFTING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnPreCrafting(a_Player, a_Grid, a_Recipe);
-		}
+	{
+		return a_Plugin->OnPreCrafting(a_Player, a_Grid, a_Recipe);
+	}
 	);
 }
 
@@ -1062,9 +1049,9 @@ bool cPluginManager::CallHookPreCrafting(cPlayer & a_Player, cCraftingGrid & a_G
 bool cPluginManager::CallHookProjectileHitBlock(cProjectileEntity & a_Projectile, int a_BlockX, int a_BlockY, int a_BlockZ, eBlockFace a_Face, const Vector3d & a_BlockHitPos)
 {
 	return GenericCallHook(HOOK_PROJECTILE_HIT_BLOCK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnProjectileHitBlock(a_Projectile, a_BlockX, a_BlockY, a_BlockZ, a_Face, a_BlockHitPos);
-		}
+	{
+		return a_Plugin->OnProjectileHitBlock(a_Projectile, a_BlockX, a_BlockY, a_BlockZ, a_Face, a_BlockHitPos);
+	}
 	);
 }
 
@@ -1075,9 +1062,9 @@ bool cPluginManager::CallHookProjectileHitBlock(cProjectileEntity & a_Projectile
 bool cPluginManager::CallHookProjectileHitEntity(cProjectileEntity & a_Projectile, cEntity & a_HitEntity)
 {
 	return GenericCallHook(HOOK_PROJECTILE_HIT_ENTITY, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnProjectileHitEntity(a_Projectile, a_HitEntity);
-		}
+	{
+		return a_Plugin->OnProjectileHitEntity(a_Projectile, a_HitEntity);
+	}
 	);
 }
 
@@ -1088,9 +1075,9 @@ bool cPluginManager::CallHookProjectileHitEntity(cProjectileEntity & a_Projectil
 bool cPluginManager::CallHookServerPing(cClientHandle & a_ClientHandle, AString & a_ServerDescription, int & a_OnlinePlayersCount, int & a_MaxPlayersCount, AString & a_Favicon)
 {
 	return GenericCallHook(HOOK_SERVER_PING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnServerPing(a_ClientHandle, a_ServerDescription, a_OnlinePlayersCount, a_MaxPlayersCount, a_Favicon);
-		}
+	{
+		return a_Plugin->OnServerPing(a_ClientHandle, a_ServerDescription, a_OnlinePlayersCount, a_MaxPlayersCount, a_Favicon);
+	}
 	);
 }
 
@@ -1101,9 +1088,9 @@ bool cPluginManager::CallHookServerPing(cClientHandle & a_ClientHandle, AString 
 bool cPluginManager::CallHookSpawnedEntity(cWorld & a_World, cEntity & a_Entity)
 {
 	return GenericCallHook(HOOK_SPAWNED_ENTITY, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnSpawnedEntity(a_World, a_Entity);
-		}
+	{
+		return a_Plugin->OnSpawnedEntity(a_World, a_Entity);
+	}
 	);
 }
 
@@ -1114,9 +1101,9 @@ bool cPluginManager::CallHookSpawnedEntity(cWorld & a_World, cEntity & a_Entity)
 bool cPluginManager::CallHookSpawnedMonster(cWorld & a_World, cMonster & a_Monster)
 {
 	return GenericCallHook(HOOK_SPAWNED_MONSTER, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnSpawnedMonster(a_World, a_Monster);
-		}
+	{
+		return a_Plugin->OnSpawnedMonster(a_World, a_Monster);
+	}
 	);
 }
 
@@ -1127,9 +1114,9 @@ bool cPluginManager::CallHookSpawnedMonster(cWorld & a_World, cMonster & a_Monst
 bool cPluginManager::CallHookSpawningEntity(cWorld & a_World, cEntity & a_Entity)
 {
 	return GenericCallHook(HOOK_SPAWNING_ENTITY, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnSpawningEntity(a_World, a_Entity);
-		}
+	{
+		return a_Plugin->OnSpawningEntity(a_World, a_Entity);
+	}
 	);
 }
 
@@ -1140,9 +1127,9 @@ bool cPluginManager::CallHookSpawningEntity(cWorld & a_World, cEntity & a_Entity
 bool cPluginManager::CallHookSpawningMonster(cWorld & a_World, cMonster & a_Monster)
 {
 	return GenericCallHook(HOOK_SPAWNING_MONSTER, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnSpawningMonster(a_World, a_Monster);
-		}
+	{
+		return a_Plugin->OnSpawningMonster(a_World, a_Monster);
+	}
 	);
 }
 
@@ -1153,9 +1140,9 @@ bool cPluginManager::CallHookSpawningMonster(cWorld & a_World, cMonster & a_Mons
 bool cPluginManager::CallHookTakeDamage(cEntity & a_Receiver, TakeDamageInfo & a_TDI)
 {
 	return GenericCallHook(HOOK_TAKE_DAMAGE, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnTakeDamage(a_Receiver, a_TDI);
-		}
+	{
+		return a_Plugin->OnTakeDamage(a_Receiver, a_TDI);
+	}
 	);
 }
 
@@ -1166,9 +1153,9 @@ bool cPluginManager::CallHookTakeDamage(cEntity & a_Receiver, TakeDamageInfo & a
 bool cPluginManager::CallHookUpdatingSign(cWorld & a_World, int a_BlockX, int a_BlockY, int a_BlockZ, AString & a_Line1, AString & a_Line2, AString & a_Line3, AString & a_Line4, cPlayer * a_Player)
 {
 	return GenericCallHook(HOOK_UPDATING_SIGN, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnUpdatingSign(a_World, a_BlockX, a_BlockY, a_BlockZ, a_Line1, a_Line2, a_Line3, a_Line4, a_Player);
-		}
+	{
+		return a_Plugin->OnUpdatingSign(a_World, a_BlockX, a_BlockY, a_BlockZ, a_Line1, a_Line2, a_Line3, a_Line4, a_Player);
+	}
 	);
 }
 
@@ -1179,9 +1166,9 @@ bool cPluginManager::CallHookUpdatingSign(cWorld & a_World, int a_BlockX, int a_
 bool cPluginManager::CallHookUpdatedSign(cWorld & a_World, int a_BlockX, int a_BlockY, int a_BlockZ, const AString & a_Line1, const AString & a_Line2, const AString & a_Line3, const AString & a_Line4, cPlayer * a_Player)
 {
 	return GenericCallHook(HOOK_UPDATED_SIGN, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnUpdatedSign(a_World, a_BlockX, a_BlockY, a_BlockZ, a_Line1, a_Line2, a_Line3, a_Line4, a_Player);
-		}
+	{
+		return a_Plugin->OnUpdatedSign(a_World, a_BlockX, a_BlockY, a_BlockZ, a_Line1, a_Line2, a_Line3, a_Line4, a_Player);
+	}
 	);
 }
 
@@ -1192,9 +1179,9 @@ bool cPluginManager::CallHookUpdatedSign(cWorld & a_World, int a_BlockX, int a_B
 bool cPluginManager::CallHookWeatherChanged(cWorld & a_World)
 {
 	return GenericCallHook(HOOK_WEATHER_CHANGED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnWeatherChanged(a_World);
-		}
+	{
+		return a_Plugin->OnWeatherChanged(a_World);
+	}
 	);
 }
 
@@ -1205,9 +1192,9 @@ bool cPluginManager::CallHookWeatherChanged(cWorld & a_World)
 bool cPluginManager::CallHookWeatherChanging(cWorld & a_World, eWeather & a_NewWeather)
 {
 	return GenericCallHook(HOOK_WEATHER_CHANGING, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnWeatherChanging(a_World, a_NewWeather);
-		}
+	{
+		return a_Plugin->OnWeatherChanging(a_World, a_NewWeather);
+	}
 	);
 }
 
@@ -1218,9 +1205,9 @@ bool cPluginManager::CallHookWeatherChanging(cWorld & a_World, eWeather & a_NewW
 bool cPluginManager::CallHookWorldStarted(cWorld & a_World)
 {
 	return GenericCallHook(HOOK_WORLD_STARTED, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnWorldStarted(a_World);
-		}
+	{
+		return a_Plugin->OnWorldStarted(a_World);
+	}
 	);
 }
 
@@ -1231,9 +1218,9 @@ bool cPluginManager::CallHookWorldStarted(cWorld & a_World)
 bool cPluginManager::CallHookWorldTick(cWorld & a_World, std::chrono::milliseconds a_Dt, std::chrono::milliseconds a_LastTickDurationMSec)
 {
 	return GenericCallHook(HOOK_WORLD_TICK, [&](cPlugin * a_Plugin)
-		{
-			return a_Plugin->OnWorldTick(a_World, a_Dt, a_LastTickDurationMSec);
-		}
+	{
+		return a_Plugin->OnWorldTick(a_World, a_Dt, a_LastTickDurationMSec);
+	}
 	);
 }
 
@@ -1278,7 +1265,7 @@ cPluginManager::CommandResult cPluginManager::HandleCommand(cPlayer & a_Player, 
 		a_ShouldCheckPermissions &&
 		!cmd->second.m_Permission.empty() &&
 		!a_Player.HasPermission(cmd->second.m_Permission)
-	)
+		)
 	{
 		LOGINFO("Player %s tried to execute forbidden command: \"%s\"", a_Player.GetName().c_str(), Split[0].c_str());
 		return crNoPermission;
@@ -1309,7 +1296,7 @@ void cPluginManager::UnloadPluginsNow()
 	cServer::BindBuiltInConsoleCommands();
 
 	// Unload all loaded plugins:
-	for (auto & plugin: m_Plugins)
+	for (auto & plugin : m_Plugins)
 	{
 		if (plugin->IsLoaded())
 		{
@@ -1334,7 +1321,7 @@ void cPluginManager::UnloadPlugin(const AString & a_PluginFolder)
 
 bool cPluginManager::LoadPlugin(const AString & a_FolderName)
 {
-	for (auto & plugin: m_Plugins)
+	for (auto & plugin : m_Plugins)
 	{
 		if (plugin->GetFolderName() == a_FolderName)
 		{
@@ -1390,7 +1377,7 @@ void cPluginManager::RemovePluginCommands(cPlugin * a_Plugin)
 
 bool cPluginManager::IsPluginLoaded(const AString & a_PluginName)
 {
-	for (auto & plugin: m_Plugins)
+	for (auto & plugin : m_Plugins)
 	{
 		if (plugin->GetName() == a_PluginName)
 		{
@@ -1420,8 +1407,8 @@ bool cPluginManager::BindCommand(
 	}
 
 	auto & reg = m_Commands[a_Command];
-	reg.m_Plugin     = a_Plugin;
-	reg.m_Handler    = a_Handler;
+	reg.m_Plugin = a_Plugin;
+	reg.m_Handler = a_Handler;
 	reg.m_Permission = a_Permission;
 	reg.m_HelpString = a_HelpString;
 	return true;
@@ -1527,8 +1514,8 @@ bool cPluginManager::BindConsoleCommand(
 	}
 
 	auto & reg = m_ConsoleCommands[a_Command];
-	reg.m_Plugin     = a_Plugin;
-	reg.m_Handler    = a_Handler;
+	reg.m_Plugin = a_Plugin;
+	reg.m_Handler = a_Handler;
 	reg.m_Permission = "";
 	reg.m_HelpString = a_HelpString;
 	return true;
@@ -1654,7 +1641,7 @@ bool cPluginManager::IsValidHookType(int a_HookType)
 bool cPluginManager::DoWithPlugin(const AString & a_PluginName, cPluginCallback a_Callback)
 {
 	// TODO: Implement locking for plugins
-	for (auto & plugin: m_Plugins)
+	for (auto & plugin : m_Plugins)
 	{
 		if (plugin->GetName() == a_PluginName)
 		{
@@ -1671,7 +1658,7 @@ bool cPluginManager::DoWithPlugin(const AString & a_PluginName, cPluginCallback 
 bool cPluginManager::ForEachPlugin(cPluginCallback a_Callback)
 {
 	// TODO: Implement locking for plugins
-	for (auto & plugin: m_Plugins)
+	for (auto & plugin : m_Plugins)
 	{
 		if (a_Callback(*plugin))
 		{
@@ -1688,7 +1675,7 @@ bool cPluginManager::ForEachPlugin(cPluginCallback a_Callback)
 AString cPluginManager::GetPluginFolderName(const AString & a_PluginName)
 {
 	// TODO: Implement locking for plugins
-	for (auto & plugin: m_Plugins)
+	for (auto & plugin : m_Plugins)
 	{
 		if (plugin->GetName() == a_PluginName)
 		{
@@ -1732,7 +1719,7 @@ size_t cPluginManager::GetNumPlugins(void) const
 size_t cPluginManager::GetNumLoadedPlugins(void) const
 {
 	size_t res = 0;
-	for (auto & plugin: m_Plugins)
+	for (auto & plugin : m_Plugins)
 	{
 		if (plugin->IsLoaded())
 		{
@@ -1772,7 +1759,6 @@ AStringVector cPluginManager::GetFoldersToLoad(cSettingsRepositoryInterface & a_
 
 	return res;
 }
-
 
 
 
