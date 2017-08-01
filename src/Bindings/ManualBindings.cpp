@@ -4060,7 +4060,9 @@ static int tolua_cBookContent_GetPages(lua_State * tolua_S)
 	{
 		return 0;
 	}
-	cBookContent * BookContent = reinterpret_cast<cBookContent *>(tolua_tousertype(tolua_S, 1, nullptr));
+
+	cBookContent * BookContent = nullptr;
+	L.GetStackValue(1, BookContent);
 	L.Push(BookContent->GetPages());
 	return 1;
 }
@@ -4082,9 +4084,10 @@ static int tolua_cBookContent_SetPages(lua_State * tolua_S)
 	{
 		return 0;
 	}
-	cBookContent * BookContent = reinterpret_cast<cBookContent *>(tolua_tousertype(tolua_S, 1, nullptr));
+
+	cBookContent * BookContent = nullptr;
 	cLuaState::cStackTablePtr Pages;
-	L.GetStackValue(2, Pages);
+	L.GetStackValues(1, BookContent, Pages);
 	Pages->ForEachArrayElement([=](cLuaState & a_LuaState, int a_Index) -> bool
 		{
 			AString Page;
