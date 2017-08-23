@@ -81,6 +81,7 @@ set(BINDING_DEPENDENCIES
 	../BlockEntities/FlowerPotEntity.h
 	../BlockID.h
 	../BlockInfo.h
+	../BookContent.h
 	../BoundingBox.h
 	../ChatColor.h
 	../ChunkDef.h
@@ -139,7 +140,6 @@ set(BINDING_DEPENDENCIES
 	../Vector3.h
 	../WebAdmin.h
 	../World.h
-	../BookContent.h
 )
 
 if (NOT MSVC)
