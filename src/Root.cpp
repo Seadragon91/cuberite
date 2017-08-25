@@ -1,4 +1,4 @@
-
+﻿
 #include "Globals.h"  // NOTE: MSVC stupidness requires this to be the same across all modules
 
 #include "Root.h"
@@ -652,7 +652,7 @@ void cRoot::ExecuteConsoleCommand(const AString & a_Cmd, cCommandOutputCallback 
 		StopServer();
 		return;
 	}
-	else if (a_Cmd == "restart")
+	if (a_Cmd == "restart")
 	{
 		m_StopEvent.Set();
 		m_InputThreadRunFlag.clear();

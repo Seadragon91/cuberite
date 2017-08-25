@@ -99,7 +99,7 @@ EMCSBiome StringToBiome(const AString & a_BiomeString)
 		{
 			return static_cast<EMCSBiome>(res);
 		}
-		else if ((res >= biFirstVariantBiome) && (res < biNumVariantBiomes))
+		if ((res >= biFirstVariantBiome) && (res < biNumVariantBiomes))
 		{
 			return static_cast<EMCSBiome>(res);
 		}

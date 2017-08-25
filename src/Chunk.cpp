@@ -1,4 +1,4 @@
-
+﻿
 #include "Globals.h"  // NOTE: MSVC stupidness requires this to be the same across all modules
 
 #ifndef _WIN32
@@ -1178,7 +1178,7 @@ int cChunk::GrowCactus(int a_RelX, int a_RelY, int a_RelZ, int a_NumBlocks)
 					)
 				)
 				{
-					return false;
+					return 0;
 				}
 			}  // for i - Coords[]
 			{
@@ -2603,7 +2603,7 @@ cChunk * cChunk::GetRelNeighborChunk(int a_RelX, int a_RelZ)
 		}
 		return nullptr;
 	}
-	else if (a_RelZ >= cChunkDef::Width)
+	if (a_RelZ >= cChunkDef::Width)
 	{
 		if (m_NeighborZP != nullptr)
 		{

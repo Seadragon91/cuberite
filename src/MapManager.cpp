@@ -1,4 +1,4 @@
-
+﻿
 // MapManager.cpp
 
 #include "Globals.h"
@@ -31,11 +31,9 @@ bool cMapManager::DoWithMap(UInt32 a_ID, cMapCallback & a_Callback)
 	{
 		return false;
 	}
-	else
-	{
-		a_Callback.Item(Map);
-		return true;
-	}
+
+	a_Callback.Item(Map);
+	return true;
 }
 
 

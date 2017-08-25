@@ -1,4 +1,4 @@
-#include "Globals.h"  // NOTE: MSVC stupidness requires this to be the same across all modules
+﻿#include "Globals.h"  // NOTE: MSVC stupidness requires this to be the same across all modules
 
 #include "ClientHandle.h"
 #include "Server.h"
@@ -1131,20 +1131,18 @@ void cClientHandle::HandleLeftClick(int a_BlockX, int a_BlockY, int a_BlockZ, eB
 				m_Player->AbortEating();
 				return;
 			}
-			else
+
+			if (PlgMgr->CallHookPlayerShooting(*m_Player))
 			{
-				if (PlgMgr->CallHookPlayerShooting(*m_Player))
-				{
-					// A plugin doesn't agree with the action. The plugin itself is responsible for handling the consequences (possible inventory mismatch)
-					return;
-				}
-				// When bow is in off-hand / shield slot
-				if (m_Player->GetInventory().GetShieldSlot().m_ItemType == E_ITEM_BOW)
-				{
-					ItemHandler = cItemHandler::GetItemHandler(m_Player->GetInventory().GetShieldSlot());
-				}
-				ItemHandler->OnItemShoot(m_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace);
+				// A plugin doesn't agree with the action. The plugin itself is responsible for handling the consequences (possible inventory mismatch)
+				return;
 			}
+			// When bow is in off-hand / shield slot
+			if (m_Player->GetInventory().GetShieldSlot().m_ItemType == E_ITEM_BOW)
+			{
+				ItemHandler = cItemHandler::GetItemHandler(m_Player->GetInventory().GetShieldSlot());
+			}
+			ItemHandler->OnItemShoot(m_Player, a_BlockX, a_BlockY, a_BlockZ, a_BlockFace);
 			return;
 		}
 

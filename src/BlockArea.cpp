@@ -1,4 +1,4 @@
-
+﻿
 // BlockArea.cpp
 
 // NOTE: compile.sh checks for this file in order to determine if this is the Cuberite folder.
@@ -919,31 +919,55 @@ void cBlockArea::FillRelCuboid(int a_MinRelX, int a_MaxRelX, int a_MinRelY, int 
 
 	if ((a_DataTypes & baTypes) != 0)
 	{
-		for (int y = a_MinRelY; y <= a_MaxRelY; y++) for (int z = a_MinRelZ; z <= a_MaxRelZ; z++) for (int x = a_MinRelX; x <= a_MaxRelX; x++)
+		for (int y = a_MinRelY; y <= a_MaxRelY; y++)
 		{
-			m_BlockTypes[MakeIndex(x, y, z)] = a_BlockType;
-		}  // for x, z, y
+			for (int z = a_MinRelZ; z <= a_MaxRelZ; z++)
+			{
+				for (int x = a_MinRelX; x <= a_MaxRelX; x++)
+				{
+					m_BlockTypes[MakeIndex(x, y, z)] = a_BlockType;
+				}  // for x, z, y
+			}
+		}
 	}
 	if ((a_DataTypes & baMetas) != 0)
 	{
-		for (int y = a_MinRelY; y <= a_MaxRelY; y++) for (int z = a_MinRelZ; z <= a_MaxRelZ; z++) for (int x = a_MinRelX; x <= a_MaxRelX; x++)
+		for (int y = a_MinRelY; y <= a_MaxRelY; y++)
 		{
-			m_BlockMetas[MakeIndex(x, y, z)] = a_BlockMeta;
-		}  // for x, z, y
+			for (int z = a_MinRelZ; z <= a_MaxRelZ; z++)
+			{
+				for (int x = a_MinRelX; x <= a_MaxRelX; x++)
+				{
+					m_BlockMetas[MakeIndex(x, y, z)] = a_BlockMeta;
+				}  // for x, z, y
+			}
+		}
 	}
 	if ((a_DataTypes & baLight) != 0)
 	{
-		for (int y = a_MinRelY; y <= a_MaxRelY; y++) for (int z = a_MinRelZ; z <= a_MaxRelZ; z++) for (int x = a_MinRelX; x <= a_MaxRelX; x++)
+		for (int y = a_MinRelY; y <= a_MaxRelY; y++)
 		{
-			m_BlockLight[MakeIndex(x, y, z)] = a_BlockLight;
-		}  // for x, z, y
+			for (int z = a_MinRelZ; z <= a_MaxRelZ; z++)
+			{
+				for (int x = a_MinRelX; x <= a_MaxRelX; x++)
+				{
+					m_BlockLight[MakeIndex(x, y, z)] = a_BlockLight;
+				}  // for x, z, y
+			}
+		}
 	}
 	if ((a_DataTypes & baSkyLight) != 0)
 	{
-		for (int y = a_MinRelY; y <= a_MaxRelY; y++) for (int z = a_MinRelZ; z <= a_MaxRelZ; z++) for (int x = a_MinRelX; x <= a_MaxRelX; x++)
+		for (int y = a_MinRelY; y <= a_MaxRelY; y++)
 		{
-			m_BlockSkyLight[MakeIndex(x, y, z)] = a_BlockSkyLight;
-		}  // for x, z, y
+			for (int z = a_MinRelZ; z <= a_MaxRelZ; z++)
+			{
+				for (int x = a_MinRelX; x <= a_MaxRelX; x++)
+				{
+					m_BlockSkyLight[MakeIndex(x, y, z)] = a_BlockSkyLight;
+				}  // for x, z, y
+			}
+		}
 	}
 
 	// If the area contains block entities, remove those in the affected cuboid and replace with whatever block entity block was filled:
@@ -2690,41 +2714,47 @@ void cBlockArea::MergeBlockEntities(int a_RelX, int a_RelY, int a_RelZ, const cB
 	RemoveNonMatchingBlockEntities();
 
 	// Clone BEs from a_Src wherever a BE is missing:
-	for (int y = 0; y < m_Size.y; ++y) for (int z = 0; z < m_Size.z; ++z) for (int x = 0; x < m_Size.x; ++x)
+	for (int y = 0; y < m_Size.y; ++y)
 	{
-		auto idx = MakeIndex(x, y, z);
-		auto type = m_BlockTypes[idx];
-		if (!cBlockEntity::IsBlockEntityBlockType(type))
+		for (int z = 0; z < m_Size.z; ++z)
 		{
-			continue;
-		}
-
-		// This block should have a block entity, check that there is one:
-		auto itr = m_BlockEntities->find(idx);
-		if (itr != m_BlockEntities->end())
-		{
-			// There is one already
-			continue;
-		}
-
-		// Copy a BE from a_Src, if it exists there:
-		auto srcX = x + a_RelX;
-		auto srcY = y + a_RelY;
-		auto srcZ = z + a_RelZ;
-		if (a_Src.IsValidRelCoords(srcX, srcY, srcZ))
-		{
-			auto srcIdx = a_Src.MakeIndex(srcX, srcY, srcZ);
-			auto itrSrc = a_Src.m_BlockEntities->find(srcIdx);
-			if (itrSrc != a_Src.m_BlockEntities->end())
+			for (int x = 0; x < m_Size.x; ++x)
 			{
-				m_BlockEntities->insert({idx, itrSrc->second->Clone(x, y, z)});
-				continue;
-			}
+				auto idx = MakeIndex(x, y, z);
+				auto type = m_BlockTypes[idx];
+				if (!cBlockEntity::IsBlockEntityBlockType(type))
+				{
+					continue;
+				}
+
+				// This block should have a block entity, check that there is one:
+				auto itr = m_BlockEntities->find(idx);
+				if (itr != m_BlockEntities->end())
+				{
+					// There is one already
+					continue;
+				}
+
+				// Copy a BE from a_Src, if it exists there:
+				auto srcX = x + a_RelX;
+				auto srcY = y + a_RelY;
+				auto srcZ = z + a_RelZ;
+				if (a_Src.IsValidRelCoords(srcX, srcY, srcZ))
+				{
+					auto srcIdx = a_Src.MakeIndex(srcX, srcY, srcZ);
+					auto itrSrc = a_Src.m_BlockEntities->find(srcIdx);
+					if (itrSrc != a_Src.m_BlockEntities->end())
+					{
+						m_BlockEntities->insert({idx, itrSrc->second->Clone(x, y, z)});
+						continue;
+					}
+				}
+				// No BE found in a_Src, insert a new empty one:
+				NIBBLETYPE meta = HasBlockMetas() ? m_BlockMetas[idx] : 0;
+				m_BlockEntities->insert({idx, cBlockEntity::CreateByBlockType(type, meta, x, y, z)});
+			}  // for x, z, y
 		}
-		// No BE found in a_Src, insert a new empty one:
-		NIBBLETYPE meta = HasBlockMetas() ? m_BlockMetas[idx] : 0;
-		m_BlockEntities->insert({idx, cBlockEntity::CreateByBlockType(type, meta, x, y, z)});
-	}  // for x, z, y
+	}
 }
 
 
@@ -2743,24 +2773,30 @@ void cBlockArea::RescanBlockEntities(void)
 	RemoveNonMatchingBlockEntities();
 
 	// Add block entities for all block types that should have a BE assigned to them:
-	for (int y = 0; y < m_Size.y; ++y) for (int z = 0; z < m_Size.z; ++z) for (int x = 0; x < m_Size.x; ++x)
+	for (int y = 0; y < m_Size.y; ++y)
 	{
-		auto idx = MakeIndex(x, y, z);
-		auto type = m_BlockTypes[idx];
-		if (!cBlockEntity::IsBlockEntityBlockType(type))
+		for (int z = 0; z < m_Size.z; ++z)
 		{
-			continue;
+			for (int x = 0; x < m_Size.x; ++x)
+			{
+				auto idx = MakeIndex(x, y, z);
+				auto type = m_BlockTypes[idx];
+				if (!cBlockEntity::IsBlockEntityBlockType(type))
+				{
+					continue;
+				}
+				// This block should have a block entity, check that there is one:
+				auto itr = m_BlockEntities->find(idx);
+				if (itr != m_BlockEntities->end())
+				{
+					continue;
+				}
+				// Create a new BE for this block:
+				NIBBLETYPE meta = HasBlockMetas() ? m_BlockMetas[idx] : 0;
+				m_BlockEntities->insert({idx, cBlockEntity::CreateByBlockType(type, meta, x, y, z)});
+			}  // for x, z, y
 		}
-		// This block should have a block entity, check that there is one:
-		auto itr = m_BlockEntities->find(idx);
-		if (itr != m_BlockEntities->end())
-		{
-			continue;
-		}
-		// Create a new BE for this block:
-		NIBBLETYPE meta = HasBlockMetas() ? m_BlockMetas[idx] : 0;
-		m_BlockEntities->insert({idx, cBlockEntity::CreateByBlockType(type, meta, x, y, z)});
-	}  // for x, z, y
+	}
 }
 
 

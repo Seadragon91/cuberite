@@ -1,4 +1,4 @@
-// ReDucTor is an awesome guy who helped me a lot
+﻿// ReDucTor is an awesome guy who helped me a lot
 
 #include "Globals.h"  // NOTE: MSVC stupidness requires this to be the same across all modules
 
@@ -292,12 +292,10 @@ bool cServer::Tick(float a_Dt)
 	{
 		return true;
 	}
-	else
-	{
-		m_bRestarting = false;
-		m_RestartEvent.Set();
-		return false;
-	}
+
+	m_bRestarting = false;
+	m_RestartEvent.Set();
+	return false;
 }
 
 
@@ -405,20 +403,20 @@ void cServer::ExecuteConsoleCommand(const AString & a_Cmd, cCommandOutputCallbac
 		a_Output.Finished();
 		return;
 	}
-	else if (split[0] == "reload")
+	if (split[0] == "reload")
 	{
 		cPluginManager::Get()->ReloadPlugins();
 		a_Output.Finished();
 		return;
 	}
-	else if (split[0] == "reloadplugins")
+	if (split[0] == "reloadplugins")
 	{
 		cPluginManager::Get()->ReloadPlugins();
 		a_Output.Out("Plugins reloaded");
 		a_Output.Finished();
 		return;
 	}
-	else if (split[0] == "load")
+	if (split[0] == "load")
 	{
 		if (split.size() > 1)
 		{
@@ -432,7 +430,7 @@ void cServer::ExecuteConsoleCommand(const AString & a_Cmd, cCommandOutputCallbac
 		a_Output.Finished();
 		return;
 	}
-	else if (split[0] == "unload")
+	if (split[0] == "unload")
 	{
 		if (split.size() > 1)
 		{
@@ -474,20 +472,19 @@ void cServer::ExecuteConsoleCommand(const AString & a_Cmd, cCommandOutputCallbac
 	}
 
 	// There is currently no way a plugin can do these (and probably won't ever be):
-	else if (split[0].compare("chunkstats") == 0)
+	if (split[0].compare("chunkstats") == 0)
 	{
 		cRoot::Get()->LogChunkStats(a_Output);
 		a_Output.Finished();
 		return;
 	}
-
-	else if (split[0].compare("luastats") == 0)
+	if (split[0].compare("luastats") == 0)
 	{
 		a_Output.Out(cLuaStateTracker::GetStats());
 		a_Output.Finished();
 		return;
 	}
-	else if (cPluginManager::Get()->ExecuteConsoleCommand(split, a_Output, a_Cmd))
+	if (cPluginManager::Get()->ExecuteConsoleCommand(split, a_Output, a_Cmd))
 	{
 		a_Output.Finished();
 		return;

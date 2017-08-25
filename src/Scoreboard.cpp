@@ -1,4 +1,4 @@
-
+﻿
 // Scoreboard.cpp
 
 // Implementation of a scoreboard that keeps track of specified objectives
@@ -113,10 +113,8 @@ cObjective::Score cObjective::GetScore(const AString & a_Name) const
 	{
 		return 0;
 	}
-	else
-	{
-		return it->second;
-	}
+
+	return it->second;
 }
 
 
@@ -350,10 +348,8 @@ cObjective * cScoreboard::GetObjective(const AString & a_Name)
 	{
 		return nullptr;
 	}
-	else
-	{
-		return &it->second;
-	}
+
+	return &it->second;
 }
 
 
@@ -406,10 +402,8 @@ cTeam * cScoreboard::GetTeam(const AString & a_Name)
 	{
 		return nullptr;
 	}
-	else
-	{
-		return &it->second;
-	}
+
+	return &it->second;
 }
 
 
@@ -578,7 +572,7 @@ void cScoreboard::SendTo(cClientHandle & a_Client)
 		// Avoid race conditions
 		cObjective * Objective = m_Display[i];
 
-		if (Objective)
+		if (Objective != nullptr)
 		{
 			a_Client.SendDisplayObjective(Objective->GetName(), static_cast<eDisplaySlot>(i));
 		}

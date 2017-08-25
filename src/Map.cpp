@@ -1,4 +1,4 @@
-
+﻿
 // Map.cpp
 
 #include "Globals.h"
@@ -250,13 +250,10 @@ bool cMap::SetPixel(unsigned int a_X, unsigned int a_Z, cMap::ColorID a_Data)
 	if ((a_X < m_Width) && (a_Z < m_Height))
 	{
 		m_Data[a_Z * m_Width + a_X] = a_Data;
-
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+
+	return false;
 }
 
 
@@ -269,10 +266,8 @@ cMap::ColorID cMap::GetPixel(unsigned int a_X, unsigned int a_Z)
 	{
 		return m_Data[a_Z * m_Width + a_X];
 	}
-	else
-	{
-		return E_BASE_COLOR_TRANSPARENT;
-	}
+
+	return E_BASE_COLOR_TRANSPARENT;
 }
 
 

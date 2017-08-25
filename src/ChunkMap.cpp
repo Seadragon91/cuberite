@@ -1,4 +1,4 @@
-
+﻿
 #include "Globals.h"  // NOTE: MSVC stupidness requires this to be the same across all modules
 
 #include "ChunkMap.h"
@@ -1279,10 +1279,8 @@ EMCSBiome cChunkMap::GetBiomeAt (int a_BlockX, int a_BlockZ)
 	{
 		return Chunk->GetBiomeAt(X, Z);
 	}
-	else
-	{
-		return m_World->GetGenerator().GetBiomeAt(a_BlockX, a_BlockZ);
-	}
+
+	return m_World->GetGenerator().GetBiomeAt(a_BlockX, a_BlockZ);
 }
 
 
@@ -2584,7 +2582,7 @@ bool cChunkMap::GrowTallGrass(int a_BlockX, int a_BlockY, int a_BlockZ)
 	{
 		return Chunk->GrowTallGrass(a_BlockX, a_BlockY, a_BlockZ);
 	}
-	return 0;
+	return false;
 }
 
 

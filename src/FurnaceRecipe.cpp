@@ -1,4 +1,4 @@
-
+﻿
 #include "Globals.h"  // NOTE: MSVC stupidness requires this to be the same across all modules
 
 #include "FurnaceRecipe.h"
@@ -272,13 +272,13 @@ void cFurnaceRecipe::ClearRecipes(void)
 
 const cFurnaceRecipe::cRecipe * cFurnaceRecipe::GetRecipeFrom(const cItem & a_Ingredient) const
 {
-	const cRecipe * BestRecipe = 0;
+	const cRecipe * BestRecipe = nullptr;
 	for (RecipeList::const_iterator itr = m_pState->Recipes.begin(); itr != m_pState->Recipes.end(); ++itr)
 	{
 		const cRecipe & Recipe = *itr;
 		if ((Recipe.In->m_ItemType == a_Ingredient.m_ItemType) && (Recipe.In->m_ItemCount <= a_Ingredient.m_ItemCount))
 		{
-			if (BestRecipe && (BestRecipe->In->m_ItemCount > Recipe.In->m_ItemCount))
+			if ((BestRecipe != nullptr) && (BestRecipe->In->m_ItemCount > Recipe.In->m_ItemCount))
 			{
 				continue;
 			}

@@ -1,4 +1,4 @@
-
+﻿
 #include "Globals.h"  // NOTE: MSVC stupidness requires this to be the same across all modules
 
 #include "World.h"
@@ -330,10 +330,8 @@ bool cWorld::SetSpawn(double a_X, double a_Y, double a_Z)
 			LOGD("Spawn set at {%f, %f, %f}", m_SpawnX, m_SpawnY, m_SpawnZ);
 			return true;
 		}
-		else
-		{
-			LOGWARNING("Couldn't write new spawn settings to \"%s\".", m_IniFileName.c_str());
-		}
+
+		LOGWARNING("Couldn't write new spawn settings to \"%s\".", m_IniFileName.c_str());
 		return false;
 }
 

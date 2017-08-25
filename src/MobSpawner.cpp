@@ -1,4 +1,4 @@
-
+﻿
 #include "Globals.h"  // NOTE: MSVC stupidness requires this to be the same across all modules
 
 #include "MobSpawner.h"
@@ -35,10 +35,8 @@ bool cMobSpawner::CheckPackCenter(BLOCKTYPE a_BlockType)
 	{
 		return IsBlockWater(a_BlockType);
 	}
-	else
-	{
-		return a_BlockType == E_BLOCK_AIR;
-	}
+
+	return a_BlockType == E_BLOCK_AIR;
 }
 
 
