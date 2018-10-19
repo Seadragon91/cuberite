@@ -3254,8 +3254,11 @@ static int tolua_cRoot_DoWithPlayerByUUID(lua_State * tolua_S)
 	bool res = Self->DoWithPlayerByUUID(PlayerUUID, [&](cPlayer & a_Player)
 		{
 			bool ret = false;
-			L.Call(FnRef, &a_Player, cLuaState::Return, ret);
-			return ret;
+			if (L.Call(FnRef, &a_Player, cLuaState::Return, ret))
+			{
+				return ret;
+			}
+			return true;
 		}
 	);
 

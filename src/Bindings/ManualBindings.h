@@ -94,8 +94,11 @@ public:
 		bool res = (Self->*DoWithFn)(ItemName, [&](Ty2 & a_Item)
 			{
 				bool ret = false;
-				L.Call(FnRef, &a_Item, cLuaState::Return, ret);
-				return ret;
+				if (L.Call(FnRef, &a_Item, cLuaState::Return, ret))
+				{
+					return ret;
+				}
+				return true;
 			}
 		);
 
@@ -143,8 +146,11 @@ public:
 		bool res = (Ty1::Get()->*DoWithFn)(ItemName, [&](Ty2 & a_Item)
 			{
 				bool ret = false;
-				L.Call(FnRef, &a_Item, cLuaState::Return, ret);
-				return ret;
+				if (L.Call(FnRef, &a_Item, cLuaState::Return, ret))
+				{
+					return ret;
+				}
+				return true;
 			}
 		);
 
@@ -192,8 +198,11 @@ public:
 		bool res = (Self->*DoWithFn)(ItemID, [&](Ty2 & a_Item)
 			{
 				bool ret = false;
-				L.Call(FnRef, &a_Item, cLuaState::Return, ret);
-				return ret;
+				if (L.Call(FnRef, &a_Item, cLuaState::Return, ret))
+				{
+					return ret;
+				}
+				return false;
 			}
 		);
 
@@ -245,8 +254,11 @@ public:
 		bool res = (Self->*DoWithFn)(BlockX, BlockY, BlockZ, [&](ITEM & a_Item)
 			{
 				bool ret = false;
-				L.Call(FnRef, &a_Item, cLuaState::Return, ret);
-				return ret;
+				if (L.Call(FnRef, &a_Item, cLuaState::Return, ret))
+				{
+					return ret;
+				}
+				return true;
 			}
 		);
 
@@ -305,8 +317,11 @@ public:
 		bool res = (Self->*DoWithFn)(BlockX, BlockY, BlockZ, [&](ITEM & a_Item)
 			{
 				bool ret = false;
-				L.Call(FnRef, &a_Item, cLuaState::Return, ret);
-				return ret;
+				if (L.Call(FnRef, &a_Item, cLuaState::Return, ret))
+				{
+					return ret;
+				}
+				return true;
 			}
 		);
 
@@ -356,8 +371,11 @@ public:
 		bool res = (Self->*ForEachFn)(ChunkX, ChunkZ, [&](Ty2 & a_Item)
 			{
 				bool ret = false;
-				L.Call(FnRef, &a_Item, cLuaState::Return, ret);
-				return ret;
+				if (L.Call(FnRef, &a_Item, cLuaState::Return, ret))
+				{
+					return ret;
+				}
+				return true;
 			}
 		);
 
@@ -462,8 +480,11 @@ public:
 		bool res = (Self->*ForEachFn)([&](Ty2 & a_Item)
 			{
 				bool ret = false;  // By default continue the enumeration
-				L.Call(FnRef, &a_Item, cLuaState::Return, ret);
-				return ret;
+				if (L.Call(FnRef, &a_Item, cLuaState::Return, ret))
+				{
+					return ret;
+				}
+				return true;
 			}
 		);
 
@@ -505,8 +526,11 @@ public:
 		bool res = (Ty1::Get()->*ForEachFn)([&](Ty2 & a_Item)
 			{
 				bool ret = false;  // By default continue the enumeration
-				L.Call(FnRef, &a_Item, cLuaState::Return, ret);
-				return ret;
+				if (L.Call(FnRef, &a_Item, cLuaState::Return, ret))
+				{
+					return ret;
+				}
+				return true;
 			}
 		);
 

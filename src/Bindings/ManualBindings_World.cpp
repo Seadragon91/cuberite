@@ -449,8 +449,11 @@ static int tolua_cWorld_DoWithPlayerByUUID(lua_State * tolua_S)
 	bool res = Self->DoWithPlayerByUUID(PlayerUUID, [&](cPlayer & a_Player)
 		{
 			bool ret = false;
-			L.Call(FnRef, &a_Player, cLuaState::Return, ret);
-			return ret;
+			if (L.Call(FnRef, &a_Player, cLuaState::Return, ret))
+			{
+				return ret;
+			}
+			return true;
 		}
 	);
 
@@ -554,8 +557,11 @@ static int tolua_cWorld_ForEachLoadedChunk(lua_State * tolua_S)
 		[&L, &FnRef](int a_ChunkX, int a_ChunkZ) -> bool
 		{
 			bool res = false;  // By default continue the enumeration
-			L.Call(FnRef, a_ChunkX, a_ChunkZ, cLuaState::Return, res);
-			return res;
+			if (L.Call(FnRef, a_ChunkX, a_ChunkZ, cLuaState::Return, res))
+			{
+				return res;
+			}
+			return true;
 		}
 	);
 
