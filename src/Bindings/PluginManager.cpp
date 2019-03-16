@@ -867,11 +867,11 @@ bool cPluginManager::CallHookPlayerRightClickingEntity(cPlayer & a_Player, cEnti
 
 
 
-bool cPluginManager::CallHookPlayerEditedBook(cPlayer & a_Player, cBookContent & a_BookContent, bool a_IsSigned)
+bool cPluginManager::CallHookPlayerEditedBook(cPlayer & a_Player, const cBookContent & a_NewContent, bool a_IsSigned)
 {
 	return GenericCallHook(HOOK_PLAYER_SHOOTING, [&](cPlugin * a_Plugin)
 	{
-		return a_Plugin->OnPlayerEditedBook(a_Player, a_BookContent, a_IsSigned);
+		return a_Plugin->OnPlayerEditedBook(a_Player, a_NewContent, a_IsSigned);
 	}
 	);
 }
@@ -880,11 +880,11 @@ bool cPluginManager::CallHookPlayerEditedBook(cPlayer & a_Player, cBookContent &
 
 
 
-bool cPluginManager::CallHookPlayerEditingBook(cPlayer & a_Player, cBookContent & a_BookContent, bool a_IsSigned)
+bool cPluginManager::CallHookPlayerEditingBook(cPlayer & a_Player, const cBookContent & a_OriginalContent, cBookContent & a_NewContent, bool a_IsSigned)
 {
 	return GenericCallHook(HOOK_PLAYER_SHOOTING, [&](cPlugin * a_Plugin)
 	{
-		return a_Plugin->OnPlayerEditingBook(a_Player, a_BookContent, a_IsSigned);
+		return a_Plugin->OnPlayerEditingBook(a_Player, a_OriginalContent, a_NewContent, a_IsSigned);
 	}
 	);
 }
