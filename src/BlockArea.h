@@ -18,6 +18,7 @@
 #include "ChunkDataCallback.h"
 #include "Cuboid.h"
 #include "FunctionRef.h"
+#include <unordered_map>
 
 
 
@@ -374,6 +375,8 @@ public:
 	size_t CountSpecificBlocks(BLOCKTYPE a_BlockType, NIBBLETYPE a_BlockMeta) const;
 
 	// tolua_end
+
+	std::unordered_map<AString, int> CountAllNonAirBlocksAndMetas() const;
 
 	/** Returns the minimum and maximum coords in each direction for the first non-ignored block in each direction.
 	If there are no non-ignored blocks within the area, or blocktypes are not present, the returned values are reverse-ranges (MinX <- m_RangeX, MaxX <- 0 etc.)

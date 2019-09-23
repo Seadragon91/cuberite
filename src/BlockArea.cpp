@@ -1953,6 +1953,53 @@ size_t cBlockArea::CountSpecificBlocks(BLOCKTYPE a_BlockType) const
 
 
 
+std::unordered_map<AString, int> cBlockArea::CountAllNonAirBlocksAndMetas() const
+{
+	std::unordered_map<AString, int> res;
+
+	// If blocktypes are not valid, log a warning and return zero occurences:
+	if (m_BlockTypes == nullptr)
+	{
+		LOGWARNING("%s: BlockTypes not available!", __FUNCTION__);
+		return res;
+	}
+
+	// If blockmetas are not valid, log a warning and count only blocktypes:
+	if (m_BlockMetas == nullptr)
+	{
+		LOGWARNING("%s: BlockMetas not available, comparing blocktypes only!", __FUNCTION__);
+		return res;
+	}
+
+	// Count the blocks:
+	size_t num = GetBlockCount();
+	for (size_t i = 0; i < num; i++)
+	{
+		auto blockType = m_BlockTypes[i];
+		if (blockType == E_BLOCK_AIR)
+		{
+			continue;
+		}
+
+		auto blockMeta = m_BlockMetas[i];
+		auto key = std::to_string(blockType).append("-").append(std::to_string(blockMeta));
+
+		if (res.find(key) == res.end())
+		{
+			res[key] = 1;
+		}
+		else
+		{
+			res[key]++;
+		}
+	}
+
+	return res;
+}
+
+
+
+
 
 size_t cBlockArea::CountSpecificBlocks(BLOCKTYPE a_BlockType, NIBBLETYPE a_BlockMeta) const
 {

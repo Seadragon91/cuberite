@@ -67,6 +67,15 @@ public:
 	cServer * GetServer(void) { return m_Server; }
 	cWorld *  GetDefaultWorld(void);
 
+	long long GetCurrentTimeInMillseconds() {
+		auto now = std::chrono::system_clock::now();
+		auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
+		auto epoch = now_ms.time_since_epoch();
+		auto value = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+
+		return value.count();
+	}
+
 	/** Returns a pointer to the world specified. If no world of that name exists, returns a nullptr. */
 	cWorld * GetWorld(const AString & a_WorldName);
 

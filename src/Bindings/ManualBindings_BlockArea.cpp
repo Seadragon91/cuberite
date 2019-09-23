@@ -1053,11 +1053,50 @@ static int tolua_cBlockArea_SetRelBlockTypeMeta(lua_State * a_LuaState)
 
 
 
+
+static int tolua_cBlockArea_CountAllNonAirBlocksAndMetas(lua_State* a_LuaState)
+{
+	// function cBlockArea:CountAllNonAirBlocksAndMetas
+
+	cLuaState L(a_LuaState);
+	if (!L.CheckParamSelf("cBlockArea"))
+	{
+		return 0;
+	}
+
+	cBlockArea* self;
+	if (!L.GetStackValues(1, self))
+	{
+		return L.ApiParamError("Cannot read 'self'");
+	}
+	if (self == nullptr)
+	{
+		return L.ApiParamError("Invalid 'self', must not be nil.");
+	}
+
+	auto res = self->CountAllNonAirBlocksAndMetas();
+
+	lua_createtable(L, 0, static_cast<int>(res.size()));
+
+	for (auto IdMetaAmount : res)
+	{
+		lua_pushstring(L, IdMetaAmount.first.c_str());
+		lua_pushinteger(L, IdMetaAmount.second);
+		lua_rawset(L, -3);
+	}
+
+	return 1;
+}
+
+
+
+
 void cManualBindings::BindBlockArea(lua_State * a_LuaState)
 {
 	tolua_beginmodule(a_LuaState, nullptr);
 		tolua_beginmodule(a_LuaState, "cBlockArea");
 			tolua_function(a_LuaState, "Create",                  tolua_cBlockArea_Create);
+			tolua_function(a_LuaState, "CountAllNonAirBlocksAndMetas", tolua_cBlockArea_CountAllNonAirBlocksAndMetas);
 			tolua_function(a_LuaState, "DoWithBlockEntityAt",     DoWithXYZ<cBlockArea, cBlockEntity, &cBlockArea::DoWithBlockEntityAt,    &cBlockArea::IsValidCoords>);
 			tolua_function(a_LuaState, "DoWithBlockEntityRelAt",  DoWithXYZ<cBlockArea, cBlockEntity, &cBlockArea::DoWithBlockEntityRelAt, &cBlockArea::IsValidRelCoords>);
 			tolua_function(a_LuaState, "FillRelCuboid",           tolua_cBlockArea_FillRelCuboid);
