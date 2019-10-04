@@ -75,6 +75,15 @@ public:
 	{
 		return static_cast<int>(std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - m_StartTime).count());
 	}
+
+	long long GetCurrentTimeInMillseconds()
+	{
+		auto now = std::chrono::system_clock::now();
+		auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
+		auto epoch = now_ms.time_since_epoch();
+		auto value = std::chrono::duration_cast<std::chrono::milliseconds>(epoch);
+		return value.count();
+	}
 	// tolua_end
 
 	/** Calls the callback for each world; returns true if the callback didn't abort (return true) */

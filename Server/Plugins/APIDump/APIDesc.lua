@@ -11370,6 +11370,16 @@ a_Player:OpenWindow(Window);
 					},
 					Notes = "Returns the one and only cRoot object.",
 				},
+				GetCurrentTimeInMillseconds =
+				{
+					Returns =
+					{
+						{
+							Type = "number",
+						},
+					},
+					Notes = "Returns the current time in milliseconds. Can be used to create a Stopwatch and to test the performance of lua code.",
+				},
 				GetBrewingRecipe =
 				{
 					IsStatic = true,
