@@ -20,6 +20,9 @@ public:
 	virtual bool OnAllChunksAvailable(void) override;
 	virtual void OnDisabled(void) override;
 
+	/** If a plugin denies the creation of the portal  */
+	bool CanEntityEnterPortal();
+
 	enum class Direction
 	{
 		X,
@@ -71,4 +74,7 @@ private:
 
 	/** The maximum Y to scan to */
 	int m_MaxY;
+
+	/** True, when plugin changed destination position. It's used to ignore the height check in nether world */
+	bool m_PluginPosition;
 };

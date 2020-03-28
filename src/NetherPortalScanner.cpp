@@ -5,9 +5,11 @@
 #include "BlockInfo.h"
 #include "Entities/Entity.h"
 #include "World.h"
-
-
-
+#include "Root.h"
+#include "Bindings/PluginManager.h"
+#include "Statistics.h"
+#include "Entities/Player.h"
+#include "ClientHandle.h"
 
 
 const double cNetherPortalScanner::OutOffset = 0.5;
@@ -17,7 +19,7 @@ const double cNetherPortalScanner::AcrossOffset = 0.5;
 
 
 
-cNetherPortalScanner::cNetherPortalScanner(cEntity * a_MovingEntity, cWorld * a_DestinationWorld, Vector3d a_DestPosition, int a_MaxY) :
+cNetherPortalScanner::cNetherPortalScanner(cEntity* a_MovingEntity, cWorld* a_DestinationWorld, Vector3d a_DestPosition, int a_MaxY) :
 	m_Entity(a_MovingEntity),
 	m_World(a_DestinationWorld),
 	m_FoundPortal(false),
@@ -25,8 +27,32 @@ cNetherPortalScanner::cNetherPortalScanner(cEntity * a_MovingEntity, cWorld * a_
 	m_Dir(Direction::X),
 	m_PortalLoc(a_DestPosition.Floor()),
 	m_Position(a_DestPosition),
-	m_MaxY(a_MaxY)
+	m_MaxY(a_MaxY),
+	m_PluginPosition(false)
 {
+}
+
+
+
+
+
+bool cNetherPortalScanner::CanEntityEnterPortal()
+{
+	Vector3d* NewPosition = new Vector3d(m_Position);
+	if (cRoot::Get()->GetPluginManager()->CallHookPortalEntering(*this->m_Entity, *NewPosition))
+	{
+		// Check if a plugin has changed the destination position of the portal
+		// If the position has not changed, disallow the entity to use the portal
+		if (*NewPosition == m_Position)
+		{
+			return false;
+		}
+
+		// A plugin wants to change the destination position of the portal
+		m_PluginPosition = true;
+		m_Position = *NewPosition;
+	}
+
 	int MinX = FloorC((m_Position.x - SearchRadius) / cChunkDef::Width);
 	int MinZ = FloorC((m_Position.z - SearchRadius) / cChunkDef::Width);
 	int MaxX = CeilC((m_Position.x + SearchRadius) / cChunkDef::Width);
@@ -38,7 +64,8 @@ cNetherPortalScanner::cNetherPortalScanner(cEntity * a_MovingEntity, cWorld * a_
 			Add(x, z);
 		}
 	}
-	Enable(*a_DestinationWorld->GetChunkMap());
+	Enable(*m_World->GetChunkMap());
+	return true;
 }
 
 
@@ -56,7 +83,7 @@ void cNetherPortalScanner::OnChunkAvailable(int a_ChunkX, int a_ChunkZ)
 		if (blocks[i] == E_BLOCK_NETHER_PORTAL)
 		{
 			Vector3i Coordinate = cChunkDef::IndexToCoordinate(i);
-			if (Coordinate.y >= m_MaxY)
+			if (!m_PluginPosition && Coordinate.y >= m_MaxY)
 			{
 				// This is above the map, don't consider it.
 				continue;
@@ -142,6 +169,14 @@ bool cNetherPortalScanner::OnAllChunksAvailable(void)
 	}
 	else
 	{
+
+		if (m_PluginPosition)
+		{
+			// No portal found, use position provided by plugin
+			m_PortalLoc = m_Position;
+			return true;
+		}
+
 		// Scan the area for a suitable location
 		int minx = FloorC(m_Position.x) - BuildSearchRadius;
 		int minz = FloorC(m_Position.z) - BuildSearchRadius;
@@ -172,7 +207,7 @@ bool cNetherPortalScanner::OnAllChunksAvailable(void)
 			// Find the nearest
 			double DistanceToClosest = (Possibilities[0] - m_Position).SqrLength();
 			Vector3i Closest = Possibilities[0];
-			for (const auto & itr : Possibilities)
+			for (const auto& itr : Possibilities)
 			{
 				double Distance = (itr - m_Position).SqrLength();
 				if (Distance < DistanceToClosest)
@@ -275,12 +310,35 @@ void cNetherPortalScanner::OnDisabled(void)
 	// Now we actually move the player
 	if (!m_FoundPortal)
 	{
-		// Build a new nether portal.
-		FLOGD("Building nether portal at {0}", m_PortalLoc);
-		BuildNetherPortal(m_PortalLoc, m_Dir, m_BuildPlatform);
+		if (!cRoot::Get()->GetPluginManager()->CallHookPortalCreating(*m_Entity, m_Position))
+		{
+			// Build a new nether portal.
+			FLOGD("Building nether portal at {0}", m_PortalLoc);
+			BuildNetherPortal(m_PortalLoc, m_Dir, m_BuildPlatform);
+
+			// The portal has been created
+			cRoot::Get()->GetPluginManager()->CallHookPortalCreated(*m_Entity, m_Position);
+		}
+
+		// Don't return here if creation of the portal has been denied
+		// If a plugin wants to abort teleportation, it should use the hook entity changing world
+
 		m_PortalLoc.x += 1;
 		m_PortalLoc.y += 1;
 		m_PortalLoc.z += 1;
+	}
+
+	if (m_Entity->IsPlayer())
+	{
+		eDimension DestionationDim = m_World->GetDimension();
+
+		// Send a respawn packet before world is loaded / generated so the client isn't left in limbo
+		static_cast<cPlayer*>(m_Entity)->GetClientHandle()->SendRespawn(DestionationDim);
+
+		if (DestionationDim == dimNether)
+		{
+			static_cast<cPlayer*>(m_Entity)->AwardAchievement(achEnterPortal);
+		}
 	}
 
 	// Put the entity near the opening
@@ -296,7 +354,7 @@ void cNetherPortalScanner::OnDisabled(void)
 		Position.z += OutOffset;
 	}
 
-	FLOGD("Placing player at {0}", Position);
+	FLOGD("Placing entity at {0}", Position);
 	m_Entity->MoveToWorld(m_World, Position, true, false);
 	delete this;
 }

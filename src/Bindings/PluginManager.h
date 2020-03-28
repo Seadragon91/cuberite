@@ -131,6 +131,9 @@ public:
 		HOOK_PLAYER_USING_ITEM,
 		HOOK_PLUGIN_MESSAGE,
 		HOOK_PLUGINS_LOADED,
+		HOOK_PORTAL_CREATED,
+		HOOK_PORTAL_CREATING,
+		HOOK_PORTAL_ENTERING,
 		HOOK_POST_CRAFTING,
 		HOOK_PRE_CRAFTING,
 		HOOK_PROJECTILE_HIT_BLOCK,
@@ -249,7 +252,7 @@ public:
 	bool CallHookHandshake                (cClientHandle & a_ClientHandle, const AString & a_Username);
 	bool CallHookHopperPullingItem        (cWorld & a_World, cHopperEntity & a_Hopper, int a_DstSlotNum, cBlockEntityWithItems & a_SrcEntity, int a_SrcSlotNum);
 	bool CallHookHopperPushingItem        (cWorld & a_World, cHopperEntity & a_Hopper, int a_SrcSlotNum, cBlockEntityWithItems & a_DstEntity, int a_DstSlotNum);
-	bool CallHookKilled		      (cEntity & a_Victim, TakeDamageInfo & a_TDI, AString & a_DeathMessage);
+	bool CallHookKilled                   (cEntity & a_Victim, TakeDamageInfo & a_TDI, AString & a_DeathMessage);
 	bool CallHookKilling                  (cEntity & a_Victim, cEntity * a_Killer, TakeDamageInfo & a_TDI);
 	bool CallHookLogin                    (cClientHandle & a_Client, UInt32 a_ProtocolVersion, const AString & a_Username);
 	bool CallHookLoginForge               (cClientHandle & a_Client, AStringMap & a_Mods);
@@ -279,6 +282,9 @@ public:
 	bool CallHookPlayerUsingItem          (cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, int a_CursorX, int a_CursorY, int a_CursorZ);
 	bool CallHookPluginMessage            (cClientHandle & a_Client, const AString & a_Channel, const AString & a_Message);
 	bool CallHookPluginsLoaded            (void);
+	bool CallHookPortalCreated            (cEntity & a_Entity, Vector3d & a_DestinationPosition);
+	bool CallHookPortalCreating           (cEntity & a_Entity, Vector3d & a_DestinationPosition);
+	bool CallHookPortalEntering           (cEntity & a_Entity, Vector3d & a_DestinationPosition);
 	bool CallHookPostCrafting             (cPlayer & a_Player, cCraftingGrid & a_Grid, cCraftingRecipe & a_Recipe);
 	bool CallHookPreCrafting              (cPlayer & a_Player, cCraftingGrid & a_Grid, cCraftingRecipe & a_Recipe);
 	bool CallHookProjectileHitBlock       (cProjectileEntity & a_Projectile, int a_BlockX, int a_BlockY, int a_BlockZ, eBlockFace a_Face, const Vector3d & a_BlockHitPos);

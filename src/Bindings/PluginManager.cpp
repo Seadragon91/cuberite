@@ -1013,6 +1013,45 @@ bool cPluginManager::CallHookPluginsLoaded(void)
 
 
 
+bool cPluginManager::CallHookPortalCreated(cEntity & a_Entity, Vector3d & a_DestinationPosition)
+{
+	return GenericCallHook(HOOK_PORTAL_CREATED, [&](cPlugin * a_Plugin)
+		{
+			return a_Plugin->OnPortalCreated(a_Entity, a_DestinationPosition);
+		}
+	);
+}
+
+
+
+
+
+bool cPluginManager::CallHookPortalCreating(cEntity & a_Entity, Vector3d & a_DestinationPosition)
+{
+	return GenericCallHook(HOOK_PORTAL_CREATING, [&](cPlugin * a_Plugin)
+		{
+			return a_Plugin->OnPortalCreating(a_Entity, a_DestinationPosition);
+		}
+	);
+}
+
+
+
+
+
+bool cPluginManager::CallHookPortalEntering(cEntity & a_Entity, Vector3d & a_DestinationPosition)
+{
+	return GenericCallHook(HOOK_PORTAL_ENTERING, [&](cPlugin * a_Plugin)
+		{
+			return a_Plugin->OnPortalEntering(a_Entity, a_DestinationPosition);
+		}
+	);
+}
+
+
+
+
+
 bool cPluginManager::CallHookPostCrafting(cPlayer & a_Player, cCraftingGrid & a_Grid, cCraftingRecipe & a_Recipe)
 {
 	return GenericCallHook(HOOK_POST_CRAFTING, [&](cPlugin * a_Plugin)

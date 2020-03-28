@@ -840,6 +840,53 @@ bool cPluginLua::OnPluginsLoaded(void)
 
 
 
+bool cPluginLua::OnPortalCreated(cEntity & a_Entity, Vector3d & a_DestinationPosition)
+{
+	return CallSimpleHooks(cPluginManager::HOOK_PORTAL_CREATED, &a_Entity, a_DestinationPosition);
+}
+
+
+
+
+
+bool cPluginLua::OnPortalCreating(cEntity & a_Entity, Vector3d & a_DestinationPosition)
+{
+	return CallSimpleHooks(cPluginManager::HOOK_PORTAL_CREATING, &a_Entity, a_DestinationPosition);
+}
+
+
+
+
+
+bool cPluginLua::OnPortalEntering(cEntity & a_Entity, Vector3d & a_DestinationPosition)
+{
+	cOperation op(*this);
+	if (!op().IsValid())
+	{
+		return false;
+	}
+	bool res = false;
+	auto & hooks = m_HookMap[cPluginManager::HOOK_PORTAL_ENTERING];
+	Vector3d * NewPosition = new Vector3d(a_DestinationPosition);
+	for (auto & hook : hooks)
+	{
+		hook->Call(&a_Entity, a_DestinationPosition, cLuaState::Return, res, NewPosition);
+		if (res)
+		{
+			if (NewPosition != nullptr)
+			{
+				a_DestinationPosition = *NewPosition;
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+
+
+
+
 bool cPluginLua::OnPostCrafting(cPlayer & a_Player, cCraftingGrid & a_Grid, cCraftingRecipe & a_Recipe)
 {
 	return CallSimpleHooks(cPluginManager::HOOK_POST_CRAFTING, &a_Player, &a_Grid, &a_Recipe);
@@ -1115,6 +1162,9 @@ const char * cPluginLua::GetHookFnName(int a_HookType)
 		case cPluginManager::HOOK_PLAYER_USING_ITEM:            return "OnPlayerUsingItem";
 		case cPluginManager::HOOK_PLUGIN_MESSAGE:               return "OnPluginMessage";
 		case cPluginManager::HOOK_PLUGINS_LOADED:               return "OnPluginsLoaded";
+		case cPluginManager::HOOK_PORTAL_CREATED:               return "OnPortalCreated";
+		case cPluginManager::HOOK_PORTAL_CREATING:              return "OnPortalCreating";
+		case cPluginManager::HOOK_PORTAL_ENTERING:              return "OnPortalEntering";
 		case cPluginManager::HOOK_POST_CRAFTING:                return "OnPostCrafting";
 		case cPluginManager::HOOK_PRE_CRAFTING:                 return "OnPreCrafting";
 		case cPluginManager::HOOK_SERVER_PING:                  return "OnServerPing";

@@ -1391,15 +1391,8 @@ bool cEntity::DetectPortal()
 						return false;
 					}
 					cWorld * DestinationWorld = cRoot::Get()->GetWorld(GetWorld()->GetLinkedOverworldName());
-					eDimension DestionationDim = DestinationWorld->GetDimension();
 
 					m_PortalCooldownData.m_ShouldPreventTeleportation = true;  // Stop portals from working on respawn
-
-					if (IsPlayer())
-					{
-						// Send a respawn packet before world is loaded / generated so the client isn't left in limbo
-						(static_cast<cPlayer *>(this))->GetClientHandle()->SendRespawn(DestionationDim);
-					}
 
 					Vector3d TargetPos = GetPosition();
 					TargetPos.x *= 8.0;
@@ -1407,8 +1400,12 @@ bool cEntity::DetectPortal()
 
 					cWorld * TargetWorld = cRoot::Get()->GetWorld(GetWorld()->GetLinkedOverworldName());
 					ASSERT(TargetWorld != nullptr);  // The linkage checker should have prevented this at startup. See cWorld::start()
+					auto PortalScanner = new cNetherPortalScanner(this, TargetWorld, TargetPos, (cChunkDef::Height));
+					if (!PortalScanner->CanEntityEnterPortal())
+					{
+						return false;
+					}
 					LOGD("Jumping %s -> %s", DimensionToString(dimNether).c_str(), DimensionToString(DestionationDim).c_str());
-					new cNetherPortalScanner(this, TargetWorld, TargetPos, cChunkDef::Height);
 					return true;
 				}
 				// Nether portal in the overworld
@@ -1419,19 +1416,8 @@ bool cEntity::DetectPortal()
 						return false;
 					}
 					cWorld * DestinationWorld = cRoot::Get()->GetWorld(GetWorld()->GetLinkedNetherWorldName());
-					eDimension DestionationDim = DestinationWorld->GetDimension();
 
 					m_PortalCooldownData.m_ShouldPreventTeleportation = true;
-
-					if (IsPlayer())
-					{
-						if (DestionationDim == dimNether)
-						{
-							static_cast<cPlayer *>(this)->AwardAchievement(achEnterPortal);
-						}
-
-						static_cast<cPlayer *>(this)->GetClientHandle()->SendRespawn(DestionationDim);
-					}
 
 					Vector3d TargetPos = GetPosition();
 					TargetPos.x /= 8.0;
@@ -1439,8 +1425,12 @@ bool cEntity::DetectPortal()
 
 					cWorld * TargetWorld = cRoot::Get()->GetWorld(GetWorld()->GetLinkedNetherWorldName());
 					ASSERT(TargetWorld != nullptr);  // The linkage checker should have prevented this at startup. See cWorld::start()
+					auto PortalScanner = new cNetherPortalScanner(this, TargetWorld, TargetPos, (cChunkDef::Height / 2));
+					if (!PortalScanner->CanEntityEnterPortal())
+					{
+						return false;
+					}
 					LOGD("Jumping %s -> %s", DimensionToString(dimOverworld).c_str(), DimensionToString(DestionationDim).c_str());
-					new cNetherPortalScanner(this, TargetWorld, TargetPos, (cChunkDef::Height / 2));
 					return true;
 				}
 			}

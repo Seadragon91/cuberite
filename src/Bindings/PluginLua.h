@@ -118,6 +118,9 @@ public:
 	virtual bool OnPlayerUsingItem          (cPlayer & a_Player, int a_BlockX, int a_BlockY, int a_BlockZ, char a_BlockFace, int a_CursorX, int a_CursorY, int a_CursorZ) override;
 	virtual bool OnPluginMessage            (cClientHandle & a_Client, const AString & a_Channel, const AString & a_Message) override;
 	virtual bool OnPluginsLoaded            (void) override;
+	virtual bool OnPortalCreated            (cEntity & a_Entity, Vector3d & a_DestinationPosition) override;
+	virtual bool OnPortalCreating           (cEntity & a_Entity, Vector3d & a_DestinationPosition) override;
+	virtual bool OnPortalEntering           (cEntity & a_Entity, Vector3d & a_DestinationPosition) override;
 	virtual bool OnPostCrafting             (cPlayer & a_Player, cCraftingGrid & a_Grid, cCraftingRecipe & a_Recipe) override;
 	virtual bool OnPreCrafting              (cPlayer & a_Player, cCraftingGrid & a_Grid, cCraftingRecipe & a_Recipe) override;
 	virtual bool OnProjectileHitBlock       (cProjectileEntity & a_Projectile, int a_BlockX, int a_BlockY, int a_BlockZ, eBlockFace a_Face, const Vector3d & a_BlockHitPos) override;
